@@ -13,13 +13,9 @@
 
 [context.production.environment]
   VITE_APP_ENV = "production"
-  VITE_SUPABASE_URL = ""
-  VITE_SUPABASE_PUBLISHABLE_KEY = ""
 
 [context.deploy-preview.environment]
   VITE_APP_ENV = "preview"
-  VITE_SUPABASE_URL = ""
-  VITE_SUPABASE_PUBLISHABLE_KEY = ""
 
 [[headers]]
   for = "/assets/*"
@@ -44,4 +40,3 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
