@@ -17,6 +17,7 @@ import AdminVideos from "./pages/admin/AdminVideos";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminRoute from "./components/AdminRoute";
+import AIChatbot from "./components/AIChatbot";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/admin/categories" element={<AdminRoute><AdminCategories /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <AIChatbot />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
