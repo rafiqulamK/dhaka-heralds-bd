@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Languages, FileText, Loader2 } from 'lucide-react';
+import { MessageCircle, X, Send, Languages, FileText, Loader2, ShieldCheck, Newspaper } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
@@ -91,13 +93,14 @@ export default function AIChatbot() {
   };
 
   const quickActions = [
-    { label: 'Summarize', icon: <FileText size={14} />, prompt: 'Please summarize the latest news headlines for me.', action: 'summarize' },
+    { label: 'Latest News', icon: <Newspaper size={14} />, prompt: 'What are the latest major news headlines today, especially about Bangladesh and South Asia? Provide a comprehensive update.', action: undefined },
+    { label: 'Summarize', icon: <FileText size={14} />, prompt: 'Please summarize the latest major news headlines for today.', action: 'summarize' },
+    { label: 'Fact-Check', icon: <ShieldCheck size={14} />, prompt: 'I want to fact-check a claim. Please help me verify: ', action: 'factcheck' },
     { label: 'Translate', icon: <Languages size={14} />, prompt: 'Translate this to Bengali: Hello, welcome to Dhaka Heralds.', action: 'translate' },
   ];
 
   return (
     <>
-      {/* FAB */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -108,16 +111,15 @@ export default function AIChatbot() {
         </button>
       )}
 
-      {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-4rem)] rounded-2xl shadow-2xl border border-border bg-card flex flex-col overflow-hidden">
+        <div className="fixed bottom-6 right-6 z-50 w-[400px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-4rem)] rounded-2xl shadow-2xl border border-border bg-card flex flex-col overflow-hidden">
           {/* Header */}
           <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <MessageCircle size={18} />
               <div>
                 <div className="font-bold text-sm">Dhaka Heralds AI</div>
-                <div className="text-xs opacity-80">News Summarizer & Translator</div>
+                <div className="text-xs opacity-80">News Analyst • Fact-Checker • Translator</div>
               </div>
             </div>
             <button onClick={() => setOpen(false)} className="p-1 hover:bg-primary-foreground/20 rounded">
@@ -128,10 +130,11 @@ export default function AIChatbot() {
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
             {messages.length === 0 && (
-              <div className="text-center text-muted-foreground text-sm py-8">
+              <div className="text-center text-muted-foreground text-sm py-6">
                 <MessageCircle size={32} className="mx-auto mb-3 text-primary/40" />
                 <p className="font-medium">Welcome to Dhaka Heralds AI</p>
-                <p className="text-xs mt-1">Ask anything, summarize news, or translate content.</p>
+                <p className="text-xs mt-1">Get unbiased news analysis, fact-checks, summaries, and translations.</p>
+                <p className="text-xs mt-1 text-primary/60">All responses include source citations & AI disclosure.</p>
                 <div className="flex flex-wrap gap-2 justify-center mt-4">
                   {quickActions.map(a => (
                     <button key={a.label} onClick={() => send(a.prompt, a.action)} className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border border-border bg-muted hover:bg-accent hover:text-accent-foreground transition-colors">
@@ -143,19 +146,25 @@ export default function AIChatbot() {
             )}
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
+                <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
                   m.role === 'user'
                     ? 'bg-primary text-primary-foreground rounded-br-md'
                     : 'bg-muted text-foreground rounded-bl-md'
                 }`}>
-                  {m.content}
+                  {m.role === 'assistant' ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:mt-2 [&_h2]:mb-1 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-2 [&_h3]:mb-1 [&_blockquote]:border-l-2 [&_blockquote]:border-primary/50 [&_blockquote]:pl-2 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_hr]:my-2 [&_a]:text-primary [&_a]:underline">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <span className="whitespace-pre-wrap">{m.content}</span>
+                  )}
                 </div>
               </div>
             ))}
             {loading && messages[messages.length - 1]?.role !== 'assistant' && (
               <div className="flex justify-start">
                 <div className="bg-muted rounded-2xl rounded-bl-md px-3 py-2 text-sm text-muted-foreground flex items-center gap-1">
-                  <Loader2 size={14} className="animate-spin" /> Thinking...
+                  <Loader2 size={14} className="animate-spin" /> Analyzing...
                 </div>
               </div>
             )}
@@ -166,7 +175,7 @@ export default function AIChatbot() {
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask, summarize, or translate..."
+              placeholder="Ask about news, fact-check, translate..."
               className="flex-1 bg-muted border border-border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-muted-foreground"
               disabled={loading}
             />
