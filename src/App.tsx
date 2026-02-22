@@ -18,6 +18,7 @@ import AdminMedia from "./pages/admin/AdminMedia";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminRoute from "./components/AdminRoute";
 import AIChatbot from "./components/AIChatbot";
+import InstallPWA from "./components/InstallPWA";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <AIChatbot />
+          <InstallPWA />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
