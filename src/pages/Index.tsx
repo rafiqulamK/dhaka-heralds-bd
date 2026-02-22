@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ArticleCard from '@/components/ArticleCard';
 import VideoCard from '@/components/VideoCard';
+import TrendingNews from '@/components/TrendingNews';
 import { Link } from 'react-router-dom';
 import { Play, ChevronRight, Zap } from 'lucide-react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
@@ -31,10 +32,10 @@ function LogoSkeleton() {
 
 function ArticleSkeleton() {
   return (
-    <div className="rounded-lg overflow-hidden bg-card border border-border">
+    <div className="rounded-xl overflow-hidden bg-card border border-border">
       <div className="h-48 bg-muted animate-pulse" />
       <div className="p-4 space-y-2">
-        <div className="h-3 w-20 bg-muted animate-pulse rounded" />
+        <div className="h-3 w-20 bg-muted animate-pulse rounded-full" />
         <div className="h-5 w-full bg-muted animate-pulse rounded" />
         <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
       </div>
@@ -44,7 +45,7 @@ function ArticleSkeleton() {
 
 function VideoSkeleton() {
   return (
-    <div className="rounded-lg overflow-hidden bg-card border border-border">
+    <div className="rounded-xl overflow-hidden bg-card border border-border">
       <div className="aspect-video bg-muted animate-pulse" />
       <div className="p-3 space-y-2">
         <div className="h-4 w-full bg-muted animate-pulse rounded" />
@@ -82,14 +83,14 @@ export default function Index() {
     { id: '1', title: 'Bangladesh at 55: A Nation Forging Its Path in the Global Arena', slug: 'bangladesh-at-55', excerpt: 'As Bangladesh commemorates another year of independence in 2026, the nation stands at a crossroads of unprecedented economic growth and democratic challenges.', cover_image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80', published_at: new Date().toISOString(), view_count: 12400, featured: true, categories: { name: 'Bangladesh', slug: 'bangladesh' } },
     { id: '2', title: 'The Padma Bridge: Three Years of Transforming Southern Bangladesh', slug: 'padma-bridge-2026', excerpt: 'Three years since its inauguration, the Padma Bridge has fundamentally reshaped the economic geography of southern Bangladesh.', cover_image_url: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&q=80', published_at: new Date(Date.now() - 3600000).toISOString(), view_count: 8700, featured: true, categories: { name: 'Business', slug: 'business' } },
     { id: '3', title: 'Climate Resilience 2026: Bangladesh Leads Global South Adaptation Efforts', slug: 'climate-resilience-2026', excerpt: 'Bangladesh emerges as a global leader in climate adaptation strategies as coastal communities implement innovative resilience programs.', cover_image_url: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80', published_at: new Date(Date.now() - 7200000).toISOString(), view_count: 6200, featured: true, categories: { name: 'World', slug: 'world' } },
-    { id: '4', title: 'RMG Sector 2026: Bangladesh Garment Industry Embraces Sustainable Practices', slug: 'rmg-sector-2026', excerpt: 'The backbone of Bangladesh\'s economy continues to evolve with sustainable manufacturing and fair wage initiatives gaining momentum.', cover_image_url: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80', published_at: new Date(Date.now() - 10800000).toISOString(), view_count: 4300, featured: false, categories: { name: 'Business', slug: 'business' } },
-    { id: '5', title: 'Digital Bangladesh 2026: Tech Exports Cross $2 Billion Milestone', slug: 'digital-bangladesh-2026', excerpt: 'Bangladesh\'s technology sector reaches a historic milestone with IT exports surpassing $2 billion, driven by AI and fintech innovation.', cover_image_url: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80', published_at: new Date(Date.now() - 14400000).toISOString(), view_count: 9800, featured: false, categories: { name: 'Business', slug: 'business' } },
+    { id: '4', title: 'RMG Sector 2026: Bangladesh Garment Industry Embraces Sustainable Practices', slug: 'rmg-sector-2026', excerpt: "The backbone of Bangladesh's economy continues to evolve with sustainable manufacturing and fair wage initiatives gaining momentum.", cover_image_url: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80', published_at: new Date(Date.now() - 10800000).toISOString(), view_count: 4300, featured: false, categories: { name: 'Business', slug: 'business' } },
+    { id: '5', title: 'Digital Bangladesh 2026: Tech Exports Cross $2 Billion Milestone', slug: 'digital-bangladesh-2026', excerpt: "Bangladesh's technology sector reaches a historic milestone with IT exports surpassing $2 billion, driven by AI and fintech innovation.", cover_image_url: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80', published_at: new Date(Date.now() - 14400000).toISOString(), view_count: 9800, featured: false, categories: { name: 'Business', slug: 'business' } },
     { id: '6', title: 'Sundarbans Conservation 2026: New Mangrove Restoration Project Launched', slug: 'sundarbans-2026', excerpt: 'A landmark international conservation project aims to restore 500 hectares of mangrove forest in the Sundarbans.', cover_image_url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80', published_at: new Date(Date.now() - 18000000).toISOString(), view_count: 5100, featured: false, categories: { name: 'Culture', slug: 'culture' } },
   ];
 
   const demoVideos = [
     { id: '1', title: 'Liberation 1971: Untold Stories from the Frontlines', slug: 'liberation-1971', description: 'A comprehensive documentary exploring firsthand accounts from freedom fighters of the 1971 Liberation War.', thumbnail_url: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80', duration_seconds: 5640, view_count: 45000, featured: true, categories: { name: 'Documentaries' } },
-    { id: '2', title: 'Dhaka 2026: The Megacity Reinventing Itself', slug: 'dhaka-2026', description: 'How Dhaka — one of the world\'s most densely populated cities — is transforming through metro rail, smart city initiatives, and green spaces.', thumbnail_url: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80', duration_seconds: 3420, view_count: 28000, featured: true, categories: { name: 'Documentaries' } },
+    { id: '2', title: 'Dhaka 2026: The Megacity Reinventing Itself', slug: 'dhaka-2026', description: "How Dhaka — one of the world's most densely populated cities — is transforming through metro rail, smart city initiatives, and green spaces.", thumbnail_url: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80', duration_seconds: 3420, view_count: 28000, featured: true, categories: { name: 'Documentaries' } },
     { id: '3', title: 'Rana Plaza: Justice and Reform — A Decade Later', slug: 'rana-plaza-decade', description: 'More than a decade after the deadliest garment factory disaster, survivors speak about justice, healing, and lasting industry reform.', thumbnail_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80', duration_seconds: 4200, view_count: 31000, featured: true, categories: { name: 'World' } },
   ];
 
@@ -136,7 +137,7 @@ export default function Index() {
                   {articles.slice(1, 3).map(a => (
                     <ArticleCard key={a.id} article={a} variant="horizontal" />
                   ))}
-                  <div className="bg-card rounded-lg gold-border p-4 flex-1">
+                  <div className="bg-card rounded-xl gold-border p-4 flex-1">
                     <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
                       <span className="w-4 h-0.5 bg-primary inline-block" />
                       Latest Updates
@@ -148,6 +149,9 @@ export default function Index() {
                 </div>
               </div>
             </section>
+
+            {/* Trending News from Firecrawl */}
+            <TrendingNews />
 
             {/* Latest News */}
             <section className="mb-12">

@@ -35,6 +35,48 @@ const NEWS_SYSTEM_PROMPT = `You are the **Dhaka Heralds AI News Analyst** — a 
 - If asked about unverifiable claims: clearly state it's unverifiable and explain why.
 - Good punctuation and grammar are essential.`;
 
+async function fetchLiveNewsContext(query: string): Promise<string> {
+  const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
+  if (!apiKey) return "";
+
+  try {
+    const response = await fetch("https://api.firecrawl.dev/v1/search", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: query + " latest news " + new Date().toISOString().split("T")[0],
+        limit: 5,
+        tbs: "qdr:d",
+        scrapeOptions: { formats: ["markdown"] },
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Firecrawl search failed:", response.status);
+      return "";
+    }
+
+    const data = await response.json();
+    const articles = data.data || [];
+    if (articles.length === 0) return "";
+
+    const formatted = articles.map((a: any, i: number) => {
+      const title = a.title || "Untitled";
+      const url = a.url || "";
+      const content = (a.markdown || a.description || "").slice(0, 400);
+      return "[" + (i + 1) + "] **" + title + "** (Source: " + url + ")\n" + content;
+    }).join("\n---\n");
+
+    return "\n\n## 🔴 LIVE NEWS CONTEXT (from real-time web search):\n" + formatted;
+  } catch (e) {
+    console.error("Firecrawl error:", e);
+    return "";
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -44,38 +86,28 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     let systemPrompt = NEWS_SYSTEM_PROMPT;
+    const userMessage = messages?.[messages.length - 1]?.content || "";
+
+    // Fetch live news context for news-related queries
+    let liveContext = "";
+    if (action !== "translate") {
+      liveContext = await fetchLiveNewsContext(userMessage);
+    }
 
     if (action === "translate") {
-      systemPrompt = `You are a professional translator for Dhaka Heralds news portal. Today is ${CURRENT_DATE}. Translate the provided text accurately while preserving journalistic tone. The user will specify the target language. If no language is specified, translate between English and Bengali. Return ONLY the translated text without any explanation. End with: "---\\n*🤖 AI Translation by Dhaka Heralds AI*"`;
+      systemPrompt = "You are a professional translator for Dhaka Heralds news portal. Today is " + CURRENT_DATE + ". Translate the provided text accurately while preserving journalistic tone. The user will specify the target language. If no language is specified, translate between English and Bengali. Return ONLY the translated text without any explanation. End with: \"---\\n*🤖 AI Translation by Dhaka Heralds AI*\"";
     } else if (action === "summarize") {
-      systemPrompt = `You are a news summarizer for Dhaka Heralds. Today is ${CURRENT_DATE}. Provide a concise, **unbiased** summary using markdown formatting:
-- Use **bold** for key facts
-- Use bullet points for clarity
-- Include a "📋 Fact-Check" section with confidence rating
-- Include a "📰 Sources" section
-- End with: "---\\n*🤖 AI-Generated Summary by Dhaka Heralds AI — Not human-authored editorial content.*"
-Keep it under 200 words.`;
+      systemPrompt = "You are a news summarizer for Dhaka Heralds. Today is " + CURRENT_DATE + ". Provide a concise, **unbiased** summary using markdown formatting:\n- Use **bold** for key facts\n- Use bullet points for clarity\n- Include a \"📋 Fact-Check\" section with confidence rating\n- Include a \"📰 Sources\" section\n- End with: \"---\\n*🤖 AI-Generated Summary by Dhaka Heralds AI — Not human-authored editorial content.*\"\nKeep it under 200 words." + liveContext;
     } else if (action === "factcheck") {
-      systemPrompt = `You are a fact-checker for Dhaka Heralds. Today is ${CURRENT_DATE}. Analyze the claim provided and respond with:
-
-## 🔍 Fact-Check Analysis
-
-**Claim:** [restate the claim]
-
-**Verdict:** [✅ True / ⚠️ Partially True / ❌ False / ❓ Unverifiable]
-
-**Analysis:** [detailed, balanced analysis with evidence]
-
-**📰 Sources:** [list sources]
-
----
-*🤖 AI Fact-Check by Dhaka Heralds AI — This is automated analysis. Always verify with primary sources.*`;
+      systemPrompt = "You are a fact-checker for Dhaka Heralds. Today is " + CURRENT_DATE + ". Analyze the claim provided and respond with:\n\n## 🔍 Fact-Check Analysis\n\n**Claim:** [restate the claim]\n\n**Verdict:** [✅ True / ⚠️ Partially True / ❌ False / ❓ Unverifiable]\n\n**Analysis:** [detailed, balanced analysis with evidence]\n\n**📰 Sources:** [list sources]\n\n---\n*🤖 AI Fact-Check by Dhaka Heralds AI — This is automated analysis. Always verify with primary sources.*" + liveContext;
+    } else {
+      systemPrompt = NEWS_SYSTEM_PROMPT + liveContext;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: "Bearer " + LOVABLE_API_KEY,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
