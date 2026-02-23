@@ -3,6 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ArticleCard from '@/components/ArticleCard';
+import CategoryTabs from '@/components/CategoryTabs';
+import HotList from '@/components/HotList';
 import VideoCard from '@/components/VideoCard';
 import TrendingNews from '@/components/TrendingNews';
 import { Link } from 'react-router-dom';
@@ -102,6 +104,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <CategoryTabs />
 
       {/* Breaking News Ticker */}
       <div className="bg-primary/10 border-b border-primary/20 py-2 overflow-hidden">
@@ -137,15 +140,8 @@ export default function Index() {
                   {articles.slice(1, 3).map(a => (
                     <ArticleCard key={a.id} article={a} variant="horizontal" />
                   ))}
-                  <div className="bg-card rounded-xl gold-border p-4 flex-1">
-                    <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
-                      <span className="w-4 h-0.5 bg-primary inline-block" />
-                      Latest Updates
-                    </h3>
-                    {allLatest.slice(0, 5).map(a => (
-                      <ArticleCard key={a.id} article={a} variant="compact" />
-                    ))}
-                  </div>
+                  {/* Hot List replaces simple Latest Updates */}
+                  <HotList articles={allLatest} />
                 </div>
               </div>
             </section>

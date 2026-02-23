@@ -69,9 +69,11 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-bold text-accent mb-3 uppercase tracking-wider">Company</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/80 dark:text-muted-foreground">
-              {['About Us', 'Contact', 'Advertise', 'Privacy Policy', 'Terms of Service'].map(s => (
-                <li key={s}><a href="#" className="hover:text-accent transition-colors">{s}</a></li>
-              ))}
+              <li><Link to="/about" className="hover:text-accent transition-colors">About Us</Link></li>
+              <li><Link to="/fact-check" className="hover:text-accent transition-colors">Fact-Check</Link></li>
+              <li><a href="mailto:info@dhakaheralds.com" className="hover:text-accent transition-colors">Contact</a></li>
+              <li><a href="#" className="hover:text-accent transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-accent transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>

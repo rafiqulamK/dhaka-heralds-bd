@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ArticlePage from "./pages/ArticlePage";
+import FactCheckPage from "./pages/FactCheckPage";
+import AboutPage from "./pages/AboutPage";
 import VideoPage from "./pages/VideoPage";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/video/:slug" element={<VideoPage />} />
             <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/fact-check" element={<FactCheckPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/admin/articles" element={<AdminRoute><AdminArticles /></AdminRoute>} />
