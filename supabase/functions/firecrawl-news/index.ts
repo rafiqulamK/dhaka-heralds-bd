@@ -54,9 +54,18 @@ Deno.serve(async (req) => {
 
     if (!response.ok) {
       console.error('Firecrawl error:', data);
+      // Fallback: return empty with message
       return new Response(
-        JSON.stringify({ success: false, error: data.error || 'Search failed' }),
-        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: true, data: [], ai_curated: false, error_note: data.error || 'Search failed, showing cached results' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Fallback if Firecrawl returns empty
+    if (!data.data || data.data.length === 0) {
+      return new Response(
+        JSON.stringify({ success: true, data: [], ai_curated: false, error_note: 'No results found' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
