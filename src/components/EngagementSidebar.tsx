@@ -28,7 +28,7 @@ export default function EngagementSidebar({ articleTitle, articleUrl }: Engageme
   };
 
   const actions = [
-    { icon: Heart, label: `${likeCount}`, active: liked, onClick: handleLike, activeClass: 'text-red-500 fill-red-500' },
+    { icon: Heart, label: `${likeCount}`, active: liked, onClick: handleLike, activeClass: 'text-destructive fill-destructive' },
     { icon: MessageCircle, label: `${commentCount}`, active: false, onClick: () => {}, activeClass: '' },
     { icon: Bookmark, label: bookmarked ? 'Saved' : 'Save', active: bookmarked, onClick: () => setBookmarked(!bookmarked), activeClass: 'text-primary fill-primary' },
     { icon: Share2, label: 'Share', active: false, onClick: handleShare, activeClass: '' },

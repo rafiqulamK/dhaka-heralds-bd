@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
+import CategoryTabs from '@/components/CategoryTabs';
 import Footer from '@/components/Footer';
 import ArticleCard from '@/components/ArticleCard';
 import VideoCard from '@/components/VideoCard';
@@ -32,6 +33,7 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <CategoryTabs />
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-10">
         <div className="mb-8 flex items-center gap-3">
           <Search size={24} className="text-primary" />
