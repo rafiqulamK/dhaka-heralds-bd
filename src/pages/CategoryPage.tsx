@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
+import CategoryTabs from '@/components/CategoryTabs';
 import Footer from '@/components/Footer';
 import ArticleCard from '@/components/ArticleCard';
 import VideoCard from '@/components/VideoCard';
@@ -33,6 +34,7 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <CategoryTabs />
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-10">
         <div className="mb-8 pb-6 border-b border-border">
           <h1 className="text-3xl font-bold gold-text capitalize">{category?.name || slug}</h1>

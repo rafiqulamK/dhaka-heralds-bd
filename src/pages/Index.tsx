@@ -96,8 +96,18 @@ export default function Index() {
     { id: '3', title: 'Rana Plaza: Justice and Reform — A Decade Later', slug: 'rana-plaza-decade', description: 'More than a decade after the deadliest garment factory disaster, survivors speak about justice, healing, and lasting industry reform.', thumbnail_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80', duration_seconds: 4200, view_count: 31000, featured: true, categories: { name: 'World' } },
   ];
 
-  const articles = featuredArticles.length > 0 ? featuredArticles : demoArticles.filter(a => a.featured);
-  const allLatest = latestArticles.length > 0 ? latestArticles : demoArticles;
+  // Merge DB + demo data, deduplicating by slug
+  const mergeArticles = (dbData: any[], demoData: any[]) => {
+    const slugs = new Set(dbData.map(a => a.slug));
+    const extras = demoData.filter(d => !slugs.has(d.slug));
+    return [...dbData, ...extras];
+  };
+
+  const allMerged = mergeArticles(latestArticles, demoArticles);
+  const articles = allMerged.filter(a => a.featured).length >= 2
+    ? allMerged.filter(a => a.featured).slice(0, 4)
+    : (featuredArticles.length > 0 ? [...featuredArticles, ...demoArticles.filter(a => a.featured)] : demoArticles.filter(a => a.featured)).slice(0, 4);
+  const allLatest = allMerged.length >= 6 ? allMerged : mergeArticles(latestArticles, demoArticles);
   const videos = featuredVideos.length > 0 ? featuredVideos : demoVideos;
   const allVideos = latestVideos.length > 0 ? latestVideos : demoVideos;
 

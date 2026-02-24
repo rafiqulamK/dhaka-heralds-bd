@@ -17,16 +17,16 @@ export default function HotList({ articles }: HotListProps) {
   const sorted = [...articles].sort((a, b) => (b.view_count || 0) - (a.view_count || 0)).slice(0, 8);
 
   const getHeatColor = (index: number) => {
-    if (index === 0) return 'text-red-500 bg-red-500/10';
-    if (index === 1) return 'text-orange-500 bg-orange-500/10';
-    if (index === 2) return 'text-amber-500 bg-amber-500/10';
+    if (index === 0) return 'text-destructive bg-destructive/10';
+    if (index === 1) return 'text-accent bg-accent/10';
+    if (index === 2) return 'text-primary bg-primary/10';
     return 'text-muted-foreground bg-muted';
   };
 
   return (
     <div className="bg-card rounded-xl gold-border p-5">
       <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2">
-        <Flame size={16} className="text-red-500" />
+        <Flame size={16} className="text-destructive" />
         Hot List
         <TrendingUp size={14} className="text-primary ml-auto" />
       </h3>
@@ -53,7 +53,7 @@ export default function HotList({ articles }: HotListProps) {
                 )}
               </div>
             </div>
-            {i < 3 && <Flame size={12} className="text-red-400 shrink-0 mt-1 animate-pulse" />}
+            {i < 3 && <Flame size={12} className="text-destructive shrink-0 mt-1 animate-pulse" />}
           </Link>
         ))}
       </div>
