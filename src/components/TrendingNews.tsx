@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { TrendingUp, ExternalLink, ShieldCheck, ShieldAlert, HelpCircle, RefreshCw, Loader2 } from 'lucide-react';
+import { TrendingUp, ShieldCheck, ShieldAlert, HelpCircle, RefreshCw, Loader2, ChevronDown, ChevronUp, ExternalLink, Clock } from 'lucide-react';
 
 interface TrendingStory {
   title: string;
@@ -26,23 +26,55 @@ const FACT_LABELS = {
   unverified: 'Unverified',
 };
 
+const CACHE_KEY = 'dh_trending_cache';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCached(): { stories: TrendingStory[]; ts: number } | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Date.now() - parsed.ts < CACHE_TTL) return parsed;
+  } catch {}
+  return null;
+}
+
+function setCache(stories: TrendingStory[]) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ stories, ts: Date.now() }));
+  } catch {}
+}
+
 export default function TrendingNews() {
   const [stories, setStories] = useState<TrendingStory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
-  const fetchTrending = async () => {
+  const fetchTrending = useCallback(async (force = false) => {
+    if (!force) {
+      const cached = getCached();
+      if (cached) {
+        setStories(cached.stories);
+        setLastFetched(new Date(cached.ts));
+        return;
+      }
+    }
     setLoading(true);
     setError(null);
     try {
       const { data, error: fnError } = await supabase.functions.invoke('firecrawl-news', {
-        body: { query: 'top trending international news today 2026', category: 'world', limit: 8 },
+        body: { query: 'top trending international news today 2026', category: 'world', limit: 12 },
       });
       if (fnError) throw fnError;
       if (data?.success && data.data) {
-        setStories(data.data.slice(0, 8));
+        // Only keep stories with images
+        const withImages = (data.data as TrendingStory[]).filter(s => s.image_url);
+        const final = withImages.slice(0, 8);
+        setStories(final);
         setLastFetched(new Date());
+        setCache(final);
       } else {
         setError(data?.error || 'Failed to fetch trending news');
       }
@@ -52,11 +84,11 @@ export default function TrendingNews() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchTrending();
-  }, []);
+  }, [fetchTrending]);
 
   if (error && stories.length === 0) {
     return (
@@ -69,7 +101,7 @@ export default function TrendingNews() {
         </div>
         <div className="bg-card rounded-xl p-6 gold-border text-center">
           <p className="text-muted-foreground text-sm">{error}</p>
-          <button onClick={fetchTrending} className="mt-3 text-sm text-primary hover:underline flex items-center gap-1 mx-auto">
+          <button onClick={() => fetchTrending(true)} className="mt-3 text-sm text-primary hover:underline flex items-center gap-1 mx-auto">
             <RefreshCw size={14} /> Retry
           </button>
         </div>
@@ -88,11 +120,11 @@ export default function TrendingNews() {
         <div className="flex items-center gap-2">
           {lastFetched && (
             <span className="text-xs text-muted-foreground">
-              Updated {lastFetched.toLocaleTimeString()}
+              {lastFetched.toLocaleTimeString()}
             </span>
           )}
           <button
-            onClick={fetchTrending}
+            onClick={() => fetchTrending(true)}
             disabled={loading}
             className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 disabled:opacity-50"
           >
@@ -114,48 +146,66 @@ export default function TrendingNews() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stories.map((story, i) => (
-            <a
-              key={i}
-              href={story.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group bg-card rounded-xl gold-border overflow-hidden card-hover flex flex-col"
-            >
-              {story.image_url ? (
-                <div className="aspect-[16/9] overflow-hidden">
+          {stories.map((story, i) => {
+            const isExpanded = expandedIdx === i;
+            return (
+              <div
+                key={i}
+                className="bg-card rounded-xl gold-border overflow-hidden card-hover flex flex-col cursor-pointer"
+                onClick={() => setExpandedIdx(isExpanded ? null : i)}
+              >
+                <div className="aspect-[16/9] overflow-hidden relative">
                   <img
-                    src={story.image_url}
+                    src={story.image_url!}
                     alt={story.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    onError={(e) => { (e.target as HTMLImageElement).closest('.aspect-\\[16\\/9\\]')?.classList.add('hidden'); }}
                   />
+                  <div className="absolute top-2 left-2 flex items-center gap-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground px-2 py-0.5 rounded">
+                      {story.category}
+                    </span>
+                  </div>
                 </div>
-              ) : (
-                <div className="aspect-[16/9] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                  <TrendingUp size={24} className="text-primary/30" />
-                </div>
-              )}
-              <div className="p-4 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded">
-                    {story.category}
-                  </span>
-                  <span className="flex items-center gap-1 text-[10px]" title={FACT_LABELS[story.fact_check_status]}>
-                    {FACT_ICONS[story.fact_check_status]}
-                  </span>
-                </div>
-                <h3 className="text-sm font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors mb-1">
-                  {story.title}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2 flex-1">{story.excerpt}</p>
-                <div className="flex items-center justify-between mt-3 text-[10px] text-muted-foreground">
-                  <span className="font-medium">{story.source}</span>
-                  <ExternalLink size={10} />
+                <div className="p-4 flex-1 flex flex-col">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="flex items-center gap-1 text-[10px] text-muted-foreground" title={FACT_LABELS[story.fact_check_status]}>
+                      {FACT_ICONS[story.fact_check_status]}
+                      {FACT_LABELS[story.fact_check_status]}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-bold text-foreground line-clamp-2 mb-1">
+                    {story.title}
+                  </h3>
+                  <p className={`text-xs text-muted-foreground ${isExpanded ? '' : 'line-clamp-2'} flex-1`}>{story.excerpt}</p>
+
+                  {/* Expandable details */}
+                  {isExpanded && (
+                    <div className="mt-3 pt-3 border-t border-border space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Clock size={12} />
+                        <span>{story.published_approx ? new Date(story.published_approx).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today'}</span>
+                      </div>
+                      <a
+                        href={story.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        Read full article at {story.source} <ExternalLink size={10} />
+                      </a>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between mt-3 text-[10px] text-muted-foreground">
+                    <span className="font-medium">{story.source}</span>
+                    {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                  </div>
                 </div>
               </div>
-            </a>
-          ))}
+            );
+          })}
         </div>
       )}
 
