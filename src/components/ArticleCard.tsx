@@ -31,14 +31,14 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
 
   if (variant === 'featured') {
     return (
-      <Link to={`/article/${article.slug}`} className="block group relative overflow-hidden rounded-lg gold-border card-hover h-full">
+      <Link to={`/article/${article.slug}`} className="block group relative overflow-hidden rounded-2xl gold-border card-hover h-full">
         <div className="aspect-[16/10] overflow-hidden">
-          <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 p-5">
+        <div className="absolute bottom-0 left-0 right-0 p-6">
           {article.categories && (
-            <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded mb-2 uppercase tracking-wider">
+            <span className="inline-block bg-primary text-primary-foreground text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-2 uppercase tracking-widest">
               {article.categories.name}
             </span>
           )}
@@ -59,13 +59,13 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
 
   if (variant === 'horizontal') {
     return (
-      <Link to={`/article/${article.slug}`} className="flex gap-3 group card-hover p-2 rounded">
-        <div className="w-24 h-20 shrink-0 overflow-hidden rounded">
+      <Link to={`/article/${article.slug}`} className="flex gap-3 group card-hover p-2 rounded-xl hover:bg-muted/50 transition-colors">
+        <div className="w-24 h-20 shrink-0 overflow-hidden rounded-lg">
           <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         </div>
         <div className="flex-1 min-w-0">
           {article.categories && (
-            <span className="text-primary text-xs font-bold uppercase tracking-wide">{article.categories.name}</span>
+            <span className="text-primary text-[10px] font-bold uppercase tracking-widest">{article.categories.name}</span>
           )}
           <h3 className="text-sm font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors mt-0.5">{article.title}</h3>
           {article.published_at && (
@@ -90,17 +90,18 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
     );
   }
 
+  // Default card — Apple News magazine style
   return (
-    <Link to={`/article/${article.slug}`} className="block group rounded-lg overflow-hidden gold-border card-hover bg-card">
+    <Link to={`/article/${article.slug}`} className="block group rounded-2xl overflow-hidden gold-border card-hover bg-card">
       <div className="aspect-[16/9] overflow-hidden">
-        <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
       </div>
-      <div className="p-4">
+      <div className="p-5">
         {article.categories && (
-          <span className="text-primary text-xs font-bold uppercase tracking-wide">{article.categories.name}</span>
+          <span className="text-primary text-[10px] font-bold uppercase tracking-widest">{article.categories.name}</span>
         )}
-        <h3 className="text-base font-bold text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">{article.title}</h3>
-        {article.excerpt && <p className="text-muted-foreground text-sm mt-1 line-clamp-2">{article.excerpt}</p>}
+        <h3 className="text-base font-bold text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors leading-snug">{article.title}</h3>
+        {article.excerpt && <p className="text-muted-foreground text-sm mt-1.5 line-clamp-2">{article.excerpt}</p>}
         <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
           {article.published_at && <span className="flex items-center gap-1"><Clock size={11} />{timeAgo(article.published_at)}</span>}
           {article.view_count != null && <span className="flex items-center gap-1"><Eye size={11} />{article.view_count.toLocaleString()}</span>}
