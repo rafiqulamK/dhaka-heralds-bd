@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
@@ -24,40 +24,64 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   const Sidebar = () => (
-    <aside className="w-64 h-full bg-card border-r border-border flex flex-col">
+    <aside className="w-64 h-full bg-card/80 backdrop-blur-xl border-r border-border flex flex-col">
       <div className="p-5 border-b border-border">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Dhaka Heralds" className="h-10 w-10 rounded-full object-cover ring-2 ring-primary/50" />
+          <img src={logo} alt="Dhaka Heralds" className="h-10 w-10 rounded-xl object-cover ring-1 ring-border" />
           <div>
-            <div className="text-sm font-bold gold-text">Dhaka Heralds</div>
-            <div className="text-xs text-muted-foreground">Admin Panel</div>
+            <div className="text-sm font-bold text-foreground tracking-tight">Dhaka Heralds</div>
+            <div className="text-[10px] text-muted-foreground tracking-widest uppercase">CMS</div>
           </div>
         </Link>
       </div>
-      <nav className="flex-1 p-4 space-y-1">
-        {navItems.map(({ icon: Icon, label, path }) => (
-          <Link
-            key={path}
-            to={path}
-            onClick={() => setSidebarOpen(false)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-              location.pathname === path
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
-          >
-            <Icon size={16} />
-            {label}
-          </Link>
-        ))}
+      <nav className="flex-1 p-3 space-y-0.5">
+        {navItems.map(({ icon: Icon, label, path }) => {
+          const active = location.pathname === path;
+          return (
+            <Link
+              key={path}
+              to={path}
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                active
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+              }`}
+            >
+              <Icon size={16} />
+              <span className="flex-1">{label}</span>
+              {active && <ChevronRight size={14} className="opacity-60" />}
+            </Link>
+          );
+        })}
       </nav>
+
+      {/* View Site link */}
+      <div className="px-3 pb-2">
+        <Link
+          to="/"
+          className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60 transition-colors"
+        >
+          <Globe size={14} />
+          <span>View Site</span>
+        </Link>
+      </div>
+
       <div className="p-4 border-t border-border">
-        <div className="text-xs text-muted-foreground mb-3 truncate">{user?.email}</div>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+            {user?.email?.[0]?.toUpperCase() || 'A'}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-foreground truncate">{user?.email}</p>
+            <p className="text-[10px] text-muted-foreground">Administrator</p>
+          </div>
+        </div>
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors w-full px-3 py-2 rounded-lg hover:bg-muted"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors w-full px-3 py-2 rounded-xl hover:bg-destructive/10"
         >
-          <LogOut size={15} /> Sign Out
+          <LogOut size={14} /> Sign Out
         </button>
       </div>
     </aside>
@@ -80,13 +104,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="md:hidden bg-card border-b border-border px-4 py-3 flex items-center gap-3">
+        <header className="md:hidden bg-card/80 backdrop-blur-xl border-b border-border px-4 py-3 flex items-center gap-3 sticky top-0 z-40">
           <button onClick={() => setSidebarOpen(true)} className="text-muted-foreground hover:text-foreground">
             <Menu size={20} />
           </button>
-          <span className="font-bold gold-text text-sm">Dhaka Heralds Admin</span>
+          <span className="font-bold text-foreground text-sm tracking-tight">Dhaka Heralds CMS</span>
         </header>
-        <main className="flex-1 p-4 md:p-8">{children}</main>
+        <main className="flex-1 p-4 md:p-8 max-w-6xl">{children}</main>
       </div>
     </div>
   );

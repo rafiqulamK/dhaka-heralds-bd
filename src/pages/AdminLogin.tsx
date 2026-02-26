@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 export default function AdminLogin() {
@@ -21,7 +22,6 @@ export default function AdminLogin() {
     if (error) {
       toast({ title: 'Login failed', description: error.message, variant: 'destructive' });
     } else {
-      // Small delay for role check
       setTimeout(() => navigate('/admin'), 500);
     }
     setLoading(false);
@@ -29,58 +29,62 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-card rounded-xl gold-border shadow-2xl p-8">
+      <div className="w-full max-w-sm">
+        <Link to="/" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
+          <ArrowLeft size={14} /> Back to site
+        </Link>
+
+        <div className="bg-card rounded-2xl border border-border shadow-xl p-8">
           <div className="text-center mb-8">
-            <img src={logo} alt="Dhaka Heralds" className="h-20 w-20 rounded-full object-cover ring-2 ring-primary/50 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold gold-text">Dhaka Heralds</h1>
-            <p className="text-muted-foreground text-sm mt-1 flex items-center justify-center gap-1.5">
-              <Shield size={14} /> Admin Portal
+            <img src={logo} alt="Dhaka Heralds" className="h-16 w-16 rounded-2xl object-cover ring-1 ring-border mx-auto mb-4" />
+            <h1 className="text-xl font-bold text-foreground tracking-tight">Admin Portal</h1>
+            <p className="text-muted-foreground text-xs mt-1 flex items-center justify-center gap-1.5">
+              <Shield size={12} /> Secure sign-in required
             </p>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Email Address</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
                 placeholder="admin@dhakaheralds.com"
-                className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                className="w-full bg-muted border border-border rounded-xl px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Password</label>
               <div className="relative">
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  placeholder="••••••••••"
-                  className="w-full bg-muted border border-border rounded-lg px-4 py-3 pr-12 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  placeholder="••••••••"
+                  className="w-full bg-muted border border-border rounded-xl px-4 py-2.5 pr-10 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full gold-gradient text-primary-foreground py-3 rounded-lg font-bold text-sm tracking-wide hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {loading ? <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" /> : <Shield size={16} />}
-              {loading ? 'Signing in...' : 'Access Admin Panel'}
+              {loading ? <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" /> : null}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Unauthorized access is strictly prohibited and monitored.
+          <p className="text-center text-[10px] text-muted-foreground mt-6">
+            Unauthorized access is prohibited.
           </p>
         </div>
       </div>

@@ -192,7 +192,7 @@ export default function AdminArticles() {
                 </td>
                 <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">{(a as any).categories?.name || '—'}</td>
                 <td className="px-4 py-3 hidden md:table-cell">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${a.status === 'published' ? 'bg-green-500/20 text-green-400' : a.status === 'draft' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-muted text-muted-foreground'}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${a.status === 'published' ? 'bg-accent/20 text-accent' : a.status === 'draft' ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                     {a.status}
                   </span>
                 </td>
