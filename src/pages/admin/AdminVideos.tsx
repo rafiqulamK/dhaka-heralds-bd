@@ -165,7 +165,7 @@ export default function AdminVideos() {
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-1">Upload Video File</label>
                   <input type="file" accept="video/*" onChange={handleVideoUpload} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground" />
-                  {form.external_url && <p className="text-xs text-green-400 mt-1">✓ Video uploaded</p>}
+                  {form.external_url && <p className="text-xs text-accent mt-1">✓ Video uploaded</p>}
                 </div>
               ) : (
                 <div>
@@ -236,7 +236,7 @@ export default function AdminVideos() {
                 </td>
                 <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell capitalize">{v.video_type}</td>
                 <td className="px-4 py-3 hidden md:table-cell">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${v.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>{v.status}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${v.status === 'published' ? 'bg-accent/20 text-accent' : 'bg-primary/20 text-primary'}`}>{v.status}</span>
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-2">

@@ -1,1 +1,7 @@
 project_id = "uftmhanuhbgscfhejljo"
+
+[functions.chat]
+verify_jwt = false
+
+[functions.firecrawl-news]
+verify_jwt = false

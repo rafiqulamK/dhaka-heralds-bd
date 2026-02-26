@@ -59,7 +59,7 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from('user_preferences' as any).upsert({
+        await supabase.from('user_preferences').upsert({
           user_id: user.id,
           interests,
         }, { onConflict: 'user_id' });

@@ -116,7 +116,7 @@ export default function AdminMedia() {
               )}
               <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <button onClick={() => copyUrl(item.file_url)} className="p-1.5 bg-card rounded text-foreground hover:text-primary">
-                  {copied === item.file_url ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                  {copied === item.file_url ? <Check size={14} className="text-accent" /> : <Copy size={14} />}
                 </button>
                 <button onClick={() => handleDelete(item)} className="p-1.5 bg-card rounded text-foreground hover:text-destructive">
                   <Trash2 size={14} />
