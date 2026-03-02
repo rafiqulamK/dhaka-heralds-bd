@@ -2,12 +2,14 @@
   "name": "Dhaka Heralds - International News Portal",
   "short_name": "Dhaka Heralds",
   "description": "World's largest multilingual latest and truth sharing Online News Portal",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#2d1a1e",
   "theme_color": "#8B2635",
   "orientation": "portrait-primary",
   "categories": ["news", "media"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/pwa-192x192.png",
@@ -26,7 +28,6 @@
       "purpose": "maskable"
     }
   ],
-  "screenshots": [],
   "shortcuts": [
     {
       "name": "Latest News",
@@ -38,6 +39,11 @@
       "name": "Search",
       "short_name": "Search",
       "url": "/search"
+    },
+    {
+      "name": "Fact Check",
+      "short_name": "Fact Check",
+      "url": "/fact-check"
     }
   ]
 }

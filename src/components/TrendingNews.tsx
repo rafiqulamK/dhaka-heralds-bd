@@ -27,7 +27,7 @@ const FACT_LABELS = {
 };
 
 const CACHE_KEY = 'dh_trending_cache';
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 15 * 60 * 1000; // 15 minutes — reduces API calls
 
 function getCached(): { stories: TrendingStory[]; ts: number } | null {
   try {
