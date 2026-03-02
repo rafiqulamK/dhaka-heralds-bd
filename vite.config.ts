@@ -19,25 +19,43 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "pwa-192x192.png", "pwa-512x512.png"],
-      manifest: false, // Use public/manifest.json
+      manifest: false,
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,webp,woff,woff2}"],
         navigateFallbackDenylist: [/^\/~oauth/],
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
             handler: "CacheFirst",
             options: {
               cacheName: "unsplash-images",
-              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/functions\/v1\/.*/i,
-            handler: "NetworkFirst",
+            handler: "StaleWhileRevalidate",
             options: {
               cacheName: "api-cache",
-              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 5 },
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 15 },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "db-cache",
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 10 },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "static-images",
+              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
         ],

@@ -22,7 +22,7 @@ const FACT_ICONS: Record<string, JSX.Element> = {
 };
 
 const CACHE_KEY = 'dh_foryou_cache';
-const CACHE_TTL = 10 * 60 * 1000;
+const CACHE_TTL = 15 * 60 * 1000; // 15 minutes — reduces API calls
 
 export default function ForYouFeed() {
   const [stories, setStories] = useState<ForYouStory[]>([]);

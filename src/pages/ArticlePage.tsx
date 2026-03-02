@@ -6,6 +6,7 @@ import CategoryTabs from '@/components/CategoryTabs';
 import Footer from '@/components/Footer';
 import EngagementSidebar from '@/components/EngagementSidebar';
 import ArticleCard from '@/components/ArticleCard';
+import ReadingProgressBar from '@/components/ReadingProgressBar';
 import { Clock, Eye, Tag } from 'lucide-react';
 
 export default function ArticlePage() {
@@ -60,6 +61,7 @@ export default function ArticlePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ReadingProgressBar />
       <Navbar />
       <CategoryTabs />
       <EngagementSidebar articleTitle={article.title} />
