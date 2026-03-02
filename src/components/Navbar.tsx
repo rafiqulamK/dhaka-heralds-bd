@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Search, Menu, X, Sun, Moon } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '@/hooks/useTheme';
+import PushNotificationToggle from '@/components/PushNotificationToggle';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 export default function Navbar() {
@@ -42,7 +43,8 @@ export default function Navbar() {
         </nav>
 
         {/* Right actions */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
+          <PushNotificationToggle />
           <button onClick={toggle} className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted" title="Toggle theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
