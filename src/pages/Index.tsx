@@ -11,6 +11,7 @@ import ForYouFeed from '@/components/ForYouFeed';
 import OnboardingModal from '@/components/OnboardingModal';
 import { Link } from 'react-router-dom';
 import { Play, ChevronRight, Zap } from 'lucide-react';
+import AutoSliderCarousel from '@/components/AutoSliderCarousel';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 const BREAKING_NEWS = [
@@ -147,7 +148,7 @@ export default function Index() {
             {/* Trending Now */}
             <TrendingNews />
 
-            {/* Latest News */}
+            {/* Latest News — Auto Slider */}
             {latest.length > 0 && (
               <section className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
@@ -158,11 +159,7 @@ export default function Index() {
                     View All <ChevronRight size={14} />
                   </Link>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {latest.slice(0, 6).map(a => (
-                    <ArticleCard key={a.id} article={a} />
-                  ))}
-                </div>
+                <AutoSliderCarousel articles={latest.slice(0, 8)} interval={4500} />
               </section>
             )}
 
