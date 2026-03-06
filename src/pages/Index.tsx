@@ -11,6 +11,7 @@ import ForYouFeed from '@/components/ForYouFeed';
 import OnboardingModal from '@/components/OnboardingModal';
 import { Link } from 'react-router-dom';
 import { Play, ChevronRight, Zap } from 'lucide-react';
+import AutoSliderCarousel from '@/components/AutoSliderCarousel';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 const BREAKING_NEWS = [
