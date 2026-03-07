@@ -28,7 +28,8 @@ export default function ForYouFeed() {
   const [stories, setStories] = useState<ForYouStory[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
-  const interests = getLocalInterests();
+  const [interests] = useState(() => getLocalInterests());
+  const hasFetched = useState(false);
 
   const fetchForYou = useCallback(async (force = false) => {
     if (!force) {
@@ -65,8 +66,11 @@ export default function ForYouFeed() {
   }, [interests]);
 
   useEffect(() => {
-    if (interests.length > 0) fetchForYou();
-  }, [fetchForYou]);
+    if (interests.length > 0 && !hasFetched[0]) {
+      hasFetched[1](true);
+      fetchForYou();
+    }
+  }, [interests.length, fetchForYou, hasFetched]);
 
   if (interests.length === 0 && stories.length === 0) return null;
 
