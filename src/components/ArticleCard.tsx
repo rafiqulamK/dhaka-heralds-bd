@@ -26,8 +26,18 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
     return `${Math.floor(h / 24)}d ago`;
   };
 
-  const placeholderImg = `https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80`;
-  const imgSrc = article.cover_image_url || placeholderImg;
+  const CATEGORY_IMAGES: Record<string, string> = {
+    bangladesh: 'https://images.unsplash.com/photo-1617634382730-9d0e6f4b0e09?w=600&q=80',
+    world: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80',
+    politics: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600&q=80',
+    business: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80',
+    technology: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',
+    sports: 'https://images.unsplash.com/photo-1461896836934-bd45ba8bf8bd?w=600&q=80',
+    culture: 'https://images.unsplash.com/photo-1533669955142-6a73332af4db?w=600&q=80',
+    science: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&q=80',
+  };
+  const placeholderImg = article.cover_image_url || CATEGORY_IMAGES[article.categories?.slug || ''] || `https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80`;
+  const imgSrc = placeholderImg;
 
   if (variant === 'featured') {
     return (
