@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -9,13 +9,13 @@ import VideoCard from '@/components/VideoCard';
 import TrendingNews from '@/components/TrendingNews';
 import ForYouFeed from '@/components/ForYouFeed';
 import OnboardingModal from '@/components/OnboardingModal';
-import { Link } from 'react-router-dom';
-import { Play, ChevronRight, Zap } from 'lucide-react';
 import AutoSliderCarousel from '@/components/AutoSliderCarousel';
+import { Link } from 'react-router-dom';
+import { Play, ChevronRight, Zap, Newspaper, Globe, TrendingUp } from 'lucide-react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 const BREAKING_NEWS = [
-  'Bangladesh marks historic diplomatic milestone in South Asia — February 2026',
+  'Bangladesh marks historic diplomatic milestone in South Asia — March 2026',
   'Dhaka Heralds exclusive: New climate resilience initiative launched for coastal regions',
   'Economic summit draws global leaders to Dhaka ahead of G20 discussions',
   'Cultural heritage sites of Bangladesh receive renewed UNESCO recognition in 2026',
@@ -43,7 +43,7 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [, setInterests] = useState<string[]>([]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     const [fa, la, fv, lv] = await Promise.all([
       supabase.from('articles').select('*, categories(name, slug)').eq('status', 'published').eq('featured', true).order('published_at', { ascending: false }).limit(10),
       supabase.from('articles').select('*, categories(name, slug)').eq('status', 'published').order('published_at', { ascending: false }).limit(100),
@@ -55,18 +55,22 @@ export default function Index() {
     setFeaturedVideos(fv.data || []);
     setLatestVideos(lv.data || []);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-    // Auto-refresh every 30 seconds
     const timer = setInterval(loadData, 30000);
     return () => clearInterval(timer);
-  }, []);
+  }, [loadData]);
 
   const featured = featuredArticles.slice(0, 4);
   const latest = latestArticles;
   const hasContent = featured.length > 0 || latest.length > 0;
+
+  // Split articles by category for diverse sections
+  const ownPosts = latest.filter(a => a.tags?.includes('dhaka-heralds-fb') || a.tags?.includes('dhaka heralds'));
+  const worldNews = latest.filter(a => a.categories?.slug === 'world' || a.categories?.name?.toLowerCase() === 'world');
+  const bdNews = latest.filter(a => a.categories?.slug === 'bangladesh' || a.categories?.name?.toLowerCase() === 'bangladesh');
 
   return (
     <div className="min-h-screen bg-background">
@@ -100,7 +104,6 @@ export default function Index() {
               <section className="mb-10">
                 {featured.length > 0 || latest.length > 0 ? (
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                    {/* Main hero */}
                     <div className="lg:col-span-8">
                       {(featured[0] || latest[0]) && (
                         <Link
@@ -133,8 +136,6 @@ export default function Index() {
                         </Link>
                       )}
                     </div>
-
-                    {/* Side cards + Hot List */}
                     <div className="lg:col-span-4 flex flex-col gap-4">
                       {(featured.length > 1 ? featured.slice(1, 3) : latest.slice(1, 3)).map(a => (
                         <ArticleCard key={a.id} article={a} variant="horizontal" />
@@ -146,24 +147,80 @@ export default function Index() {
               </section>
             )}
 
+            {/* Dhaka Heralds Own Posts — Auto Slider */}
+            {ownPosts.length > 0 && (
+              <section className="mb-10">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="w-1 h-6 bg-primary rounded" />
+                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                    <Newspaper size={18} className="text-primary" /> Dhaka Heralds Posts
+                  </h2>
+                  <span className="flex-1 h-px bg-border" />
+                </div>
+                <AutoSliderCarousel articles={ownPosts} />
+              </section>
+            )}
+
+            {/* Latest News — Auto Slider */}
+            {latest.length > 0 && (
+              <section className="mb-10">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="w-1 h-6 bg-primary rounded" />
+                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                    <TrendingUp size={18} className="text-primary" /> Latest News
+                  </h2>
+                  <span className="flex-1 h-px bg-border" />
+                  <Link to="/category/world" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
+                    View All <ChevronRight size={14} />
+                  </Link>
+                </div>
+                <AutoSliderCarousel articles={latest} />
+              </section>
+            )}
+
             {/* For You — personalized */}
             <ForYouFeed />
 
             {/* Trending Now */}
             <TrendingNews />
 
-            {/* Latest News — Auto Slider */}
-            {latest.length > 0 && (
-              <section className="mb-12">
-                <div className="flex items-center gap-3 mb-6">
+            {/* World News Grid */}
+            {worldNews.length > 0 && (
+              <section className="mb-10">
+                <div className="flex items-center gap-3 mb-5">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text">Latest News</h2>
+                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                    <Globe size={18} className="text-primary" /> World News
+                  </h2>
                   <span className="flex-1 h-px bg-border" />
                   <Link to="/category/world" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
-                    View All <ChevronRight size={14} />
+                    More <ChevronRight size={14} />
                   </Link>
                 </div>
-                <AutoSliderCarousel articles={latest.slice(0, 8)} interval={4500} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {worldNews.slice(0, 8).map(a => (
+                    <ArticleCard key={a.id} article={a} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Bangladesh News Grid */}
+            {bdNews.length > 0 && (
+              <section className="mb-10">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="w-1 h-6 bg-primary rounded" />
+                  <h2 className="text-xl font-bold gold-text">🇧🇩 Bangladesh</h2>
+                  <span className="flex-1 h-px bg-border" />
+                  <Link to="/category/bangladesh" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
+                    More <ChevronRight size={14} />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {bdNews.slice(0, 8).map(a => (
+                    <ArticleCard key={a.id} article={a} />
+                  ))}
+                </div>
               </section>
             )}
 
@@ -193,7 +250,7 @@ export default function Index() {
             )}
 
             {/* More Stories */}
-            {latest.length > 6 && (
+            {latest.length > 8 && (
               <section className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="w-1 h-6 bg-primary rounded" />
@@ -201,7 +258,7 @@ export default function Index() {
                   <span className="flex-1 h-px bg-border" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {latest.slice(6, 10).map(a => (
+                  {latest.slice(8, 20).map(a => (
                     <ArticleCard key={a.id} article={a} />
                   ))}
                 </div>
