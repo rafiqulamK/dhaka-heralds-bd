@@ -43,21 +43,25 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [, setInterests] = useState<string[]>([]);
 
+  const loadData = async () => {
+    const [fa, la, fv, lv] = await Promise.all([
+      supabase.from('articles').select('*, categories(name, slug)').eq('status', 'published').eq('featured', true).order('published_at', { ascending: false }).limit(10),
+      supabase.from('articles').select('*, categories(name, slug)').eq('status', 'published').order('published_at', { ascending: false }).limit(100),
+      supabase.from('videos').select('*, categories(name, slug)').eq('status', 'published').eq('featured', true).order('published_at', { ascending: false }).limit(6),
+      supabase.from('videos').select('*, categories(name, slug)').eq('status', 'published').order('published_at', { ascending: false }).limit(20),
+    ]);
+    setFeaturedArticles(fa.data || []);
+    setLatestArticles(la.data || []);
+    setFeaturedVideos(fv.data || []);
+    setLatestVideos(lv.data || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const load = async () => {
-      const [fa, la, fv, lv] = await Promise.all([
-        supabase.from('articles').select('*, categories(name, slug)').eq('status', 'published').eq('featured', true).order('published_at', { ascending: false }).limit(4),
-        supabase.from('articles').select('*, categories(name, slug)').eq('status', 'published').order('published_at', { ascending: false }).limit(12),
-        supabase.from('videos').select('*, categories(name, slug)').eq('status', 'published').eq('featured', true).order('published_at', { ascending: false }).limit(3),
-        supabase.from('videos').select('*, categories(name, slug)').eq('status', 'published').order('published_at', { ascending: false }).limit(8),
-      ]);
-      setFeaturedArticles(fa.data || []);
-      setLatestArticles(la.data || []);
-      setFeaturedVideos(fv.data || []);
-      setLatestVideos(lv.data || []);
-      setLoading(false);
-    };
-    load();
+    loadData();
+    // Auto-refresh every 30 seconds
+    const timer = setInterval(loadData, 30000);
+    return () => clearInterval(timer);
   }, []);
 
   const featured = featuredArticles.slice(0, 4);
