@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Play, Eye } from 'lucide-react';
+import { getVideoEmbedUrl } from '@/lib/video-utils';
 
 export default function VideoPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -32,6 +33,8 @@ export default function VideoPage() {
     </div>
   );
 
+  const embed = video ? getVideoEmbedUrl(video) : null;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -48,11 +51,17 @@ export default function VideoPage() {
               {video.view_count != null && <span className="flex items-center gap-1.5"><Eye size={14} />{video.view_count.toLocaleString()} views</span>}
             </div>
             {/* Video Player */}
-            <div className="aspect-video bg-black rounded-lg overflow-hidden gold-border mb-6">
-              {video.video_url ? (
-                <video src={video.video_url} controls className="w-full h-full" poster={video.thumbnail_url || undefined} />
-              ) : video.external_url ? (
-                <iframe src={video.external_url.replace('watch?v=', 'embed/')} className="w-full h-full" allowFullScreen title={video.title} />
+            <div className="aspect-video bg-black rounded-lg overflow-hidden border border-border mb-6">
+              {embed && (embed.type === 'youtube' || embed.type === 'vimeo' || embed.type === 'facebook') && embed.embedUrl ? (
+                <iframe
+                  src={embed.embedUrl}
+                  className="w-full h-full"
+                  allowFullScreen
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  title={video.title}
+                />
+              ) : embed?.type === 'upload' && embed.embedUrl ? (
+                <video src={embed.embedUrl} controls className="w-full h-full" poster={video.thumbnail_url || undefined} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-card">
                   <div className="text-center">
@@ -68,7 +77,7 @@ export default function VideoPage() {
           </>
         ) : (
           <div className="text-center py-20">
-            <h1 className="text-2xl font-bold gold-text">Video not found</h1>
+            <h1 className="text-2xl font-bold text-foreground">Video not found</h1>
           </div>
         )}
       </main>
