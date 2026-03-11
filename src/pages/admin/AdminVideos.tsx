@@ -3,7 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '@/components/AdminLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Youtube, Facebook } from 'lucide-react';
+import { extractYouTubeId, getYouTubeThumbnail } from '@/lib/video-utils';
 
 interface VideoFormData {
   title: string;
@@ -45,14 +46,34 @@ export default function AdminVideos() {
 
   useEffect(() => { load(); }, []);
 
-  const slugify = (t: string) => t.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+  const slugify = (t: string) => t.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '').slice(0, 60) + '-' + Date.now().toString(36);
+
+  // Auto-fetch YouTube thumbnail when URL changes
+  const handleUrlChange = (url: string) => {
+    setForm(f => {
+      const updated = { ...f, external_url: url };
+      // Auto-detect platform
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        updated.video_type = 'youtube';
+        const ytId = extractYouTubeId(url);
+        if (ytId && !f.thumbnail_url) {
+          updated.thumbnail_url = getYouTubeThumbnail(ytId);
+        }
+      } else if (url.includes('facebook.com') || url.includes('fb.watch') || url.includes('fb.com')) {
+        updated.video_type = 'facebook';
+      } else if (url.includes('vimeo.com')) {
+        updated.video_type = 'vimeo';
+      }
+      return updated;
+    });
+  };
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
     const path = `${user?.id}/${Date.now()}-${file.name}`;
-    const { data, error } = await supabase.storage.from('media-videos').upload(path, file);
+    const { error } = await supabase.storage.from('media-videos').upload(path, file);
     if (error) {
       toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
     } else {
@@ -128,16 +149,16 @@ export default function AdminVideos() {
   return (
     <AdminLayout>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold gold-text">Videos & Documentaries</h1>
-        <button onClick={() => { setShowForm(true); setForm(emptyForm); setEditId(null); }} className="gold-gradient text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity">
+        <h1 className="text-2xl font-bold text-foreground">Videos & Media</h1>
+        <button onClick={() => { setShowForm(true); setForm(emptyForm); setEditId(null); }} className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity">
           <Plus size={16} /> New Video
         </button>
       </div>
 
       {showForm && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto p-4">
-          <div className="bg-card rounded-xl gold-border w-full max-w-2xl my-8 p-6">
-            <h2 className="text-lg font-bold text-foreground mb-5">{editId ? 'Edit Video' : 'New Video'}</h2>
+          <div className="bg-card rounded-xl border border-border w-full max-w-2xl my-8 p-6">
+            <h2 className="text-lg font-bold text-foreground mb-5">{editId ? 'Edit Video' : 'Add Video'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -145,43 +166,53 @@ export default function AdminVideos() {
                   <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value, slug: f.slug || slugify(e.target.value) }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Slug *</label>
-                  <input required value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Slug</label>
+                  <input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
                 <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
               </div>
+
+              {/* Video URL — supports YouTube, Facebook, Vimeo */}
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Video Type</label>
-                <select value={form.video_type} onChange={e => setForm(f => ({ ...f, video_type: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary">
-                  <option value="youtube">YouTube URL</option>
-                  <option value="vimeo">Vimeo URL</option>
-                  <option value="upload">Upload Video File</option>
-                </select>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Video URL <span className="text-muted-foreground/60">(YouTube, Facebook, Vimeo)</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    value={form.external_url}
+                    onChange={e => handleUrlChange(e.target.value)}
+                    className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="https://www.youtube.com/watch?v=... or Facebook reel URL"
+                  />
+                </div>
+                <div className="flex items-center gap-2 mt-1.5">
+                  {form.video_type === 'youtube' && <span className="flex items-center gap-1 text-[10px] text-destructive"><Youtube size={12} /> YouTube</span>}
+                  {form.video_type === 'facebook' && <span className="flex items-center gap-1 text-[10px] text-primary"><Facebook size={12} /> Facebook</span>}
+                  {form.video_type === 'vimeo' && <span className="text-[10px] text-muted-foreground">Vimeo</span>}
+                </div>
               </div>
-              {form.video_type === 'upload' ? (
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Upload Video File</label>
-                  <input type="file" accept="video/*" onChange={handleVideoUpload} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground" />
-                  {form.external_url && <p className="text-xs text-accent mt-1">✓ Video uploaded</p>}
-                </div>
-              ) : (
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Video URL (YouTube/Vimeo embed or watch URL)</label>
-                  <input value={form.external_url} onChange={e => setForm(f => ({ ...f, external_url: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" placeholder="https://www.youtube.com/watch?v=..." />
-                </div>
-              )}
+
+              {/* Or upload */}
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Or Upload Video File</label>
+                <input type="file" accept="video/*" onChange={handleVideoUpload} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground" />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-1">Thumbnail</label>
+                  {form.thumbnail_url && (
+                    <img src={form.thumbnail_url} alt="Thumbnail" className="w-full h-24 object-cover rounded mb-1" />
+                  )}
                   <input type="file" accept="image/*" onChange={handleThumbnailUpload} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground" />
                   <input value={form.thumbnail_url} onChange={e => setForm(f => ({ ...f, thumbnail_url: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary mt-1" placeholder="or paste image URL" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-1">Duration (seconds)</label>
-                  <input type="number" value={form.duration_seconds} onChange={e => setForm(f => ({ ...f, duration_seconds: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" placeholder="e.g. 3600 for 1 hour" />
+                  <input type="number" value={form.duration_seconds} onChange={e => setForm(f => ({ ...f, duration_seconds: e.target.value }))} className="w-full bg-muted border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary" placeholder="e.g. 120" />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -207,7 +238,7 @@ export default function AdminVideos() {
               </label>
               {uploading && <p className="text-xs text-primary animate-pulse">Uploading file...</p>}
               <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={loading || uploading} className="gold-gradient text-primary-foreground px-5 py-2 rounded-lg text-sm font-medium disabled:opacity-50">
+                <button type="submit" disabled={loading || uploading} className="bg-primary text-primary-foreground px-5 py-2 rounded-lg text-sm font-medium disabled:opacity-50">
                   {loading ? 'Saving...' : (editId ? 'Update' : 'Create Video')}
                 </button>
                 <button type="button" onClick={() => { setShowForm(false); setEditId(null); setForm(emptyForm); }} className="bg-muted text-foreground px-5 py-2 rounded-lg text-sm">Cancel</button>
@@ -217,7 +248,7 @@ export default function AdminVideos() {
         </div>
       )}
 
-      <div className="bg-card rounded-xl gold-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-muted/50 border-b border-border">
             <tr>
@@ -231,8 +262,15 @@ export default function AdminVideos() {
             {videos.map(v => (
               <tr key={v.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-3">
-                  <div className="font-medium text-foreground line-clamp-1">{v.title}</div>
-                  {v.featured && <span className="text-xs text-primary font-medium">Featured</span>}
+                  <div className="flex items-center gap-3">
+                    {(v.thumbnail_url || v.external_url) && (
+                      <img src={v.thumbnail_url || (extractYouTubeId(v.external_url || '') ? getYouTubeThumbnail(extractYouTubeId(v.external_url || '')!) : '')} alt="" className="w-12 h-8 rounded object-cover shrink-0" />
+                    )}
+                    <div>
+                      <div className="font-medium text-foreground line-clamp-1">{v.title}</div>
+                      {v.featured && <span className="text-xs text-primary font-medium">Featured</span>}
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell capitalize">{v.video_type}</td>
                 <td className="px-4 py-3 hidden md:table-cell">
@@ -247,7 +285,7 @@ export default function AdminVideos() {
               </tr>
             ))}
             {videos.length === 0 && (
-              <tr><td colSpan={4} className="px-4 py-10 text-center text-muted-foreground">No videos yet. Upload your first video!</td></tr>
+              <tr><td colSpan={4} className="px-4 py-10 text-center text-muted-foreground">No videos yet. Add a YouTube URL or upload a video!</td></tr>
             )}
           </tbody>
         </table>

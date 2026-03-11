@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Play, Clock, Eye } from 'lucide-react';
+import { getVideoEmbedUrl, extractYouTubeId, getYouTubeThumbnail } from '@/lib/video-utils';
 
 interface Video {
   id: string;
@@ -10,12 +11,15 @@ interface Video {
   duration_seconds?: number | null;
   view_count?: number | null;
   published_at?: string | null;
+  video_url?: string | null;
+  external_url?: string | null;
+  video_type?: string | null;
   categories?: { name: string } | null;
 }
 
 interface VideoCardProps {
   video: Video;
-  variant?: 'default' | 'featured' | 'compact';
+  variant?: 'default' | 'featured' | 'compact' | 'embed';
 }
 
 const formatDuration = (s: number) => {
@@ -24,13 +28,57 @@ const formatDuration = (s: number) => {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 };
 
+function getSmartThumbnail(video: Video): string {
+  if (video.thumbnail_url) return video.thumbnail_url;
+  const url = video.external_url || video.video_url || '';
+  const ytId = extractYouTubeId(url);
+  if (ytId) return getYouTubeThumbnail(ytId);
+  return 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80';
+}
+
 export default function VideoCard({ video, variant = 'default' }: VideoCardProps) {
-  const placeholder = `https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80`;
-  const imgSrc = video.thumbnail_url || placeholder;
+  const imgSrc = getSmartThumbnail(video);
+
+  // Embed variant — shows inline YouTube/FB player on homepage
+  if (variant === 'embed') {
+    const { type, embedUrl } = getVideoEmbedUrl(video);
+    return (
+      <div className="rounded-2xl overflow-hidden border border-border bg-card">
+        <div className="aspect-video">
+          {(type === 'youtube' || type === 'vimeo' || type === 'facebook') && embedUrl ? (
+            <iframe
+              src={embedUrl}
+              className="w-full h-full"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              title={video.title}
+            />
+          ) : (
+            <Link to={`/video/${video.slug}`} className="block relative w-full h-full group">
+              <img src={imgSrc} alt={video.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 flex items-center justify-center bg-background/20">
+                <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center">
+                  <Play size={22} className="text-primary-foreground ml-1" fill="currentColor" />
+                </div>
+              </div>
+            </Link>
+          )}
+        </div>
+        <div className="p-4">
+          <Link to={`/video/${video.slug}`}>
+            <h3 className="text-sm font-bold text-foreground line-clamp-2 hover:text-primary transition-colors">{video.title}</h3>
+          </Link>
+          {video.categories && (
+            <span className="text-primary text-[10px] font-bold uppercase tracking-wide">{video.categories.name}</span>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   if (variant === 'featured') {
     return (
-      <Link to={`/video/${video.slug}`} className="block group relative overflow-hidden rounded-lg gold-border card-hover">
+      <Link to={`/video/${video.slug}`} className="block group relative overflow-hidden rounded-lg border border-border card-hover">
         <div className="aspect-video overflow-hidden">
           <img src={imgSrc} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
@@ -59,7 +107,7 @@ export default function VideoCard({ video, variant = 'default' }: VideoCardProps
   }
 
   return (
-    <Link to={`/video/${video.slug}`} className="block group rounded-lg overflow-hidden gold-border card-hover bg-card">
+    <Link to={`/video/${video.slug}`} className="block group rounded-lg overflow-hidden border border-border card-hover bg-card">
       <div className="relative aspect-video overflow-hidden">
         <img src={imgSrc} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-background/20 group-hover:bg-background/10 transition-colors" />

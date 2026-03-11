@@ -67,10 +67,11 @@ export default function Index() {
   const latest = latestArticles;
   const hasContent = featured.length > 0 || latest.length > 0;
 
-  // Split articles by category for diverse sections
   const ownPosts = latest.filter(a => a.tags?.includes('dhaka-heralds-fb') || a.tags?.includes('dhaka heralds'));
   const worldNews = latest.filter(a => a.categories?.slug === 'world' || a.categories?.name?.toLowerCase() === 'world');
   const bdNews = latest.filter(a => a.categories?.slug === 'bangladesh' || a.categories?.name?.toLowerCase() === 'bangladesh');
+
+  const allVideos = featuredVideos.length > 0 ? featuredVideos : latestVideos.slice(0, 6);
 
   return (
     <div className="min-h-screen bg-background">
@@ -99,16 +100,16 @@ export default function Index() {
           </div>
         ) : (
           <>
-            {/* Full-bleed Hero */}
+            {/* Hero */}
             {hasContent && (
               <section className="mb-10">
-                {featured.length > 0 || latest.length > 0 ? (
+                {(featured.length > 0 || latest.length > 0) && (
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
                     <div className="lg:col-span-8">
                       {(featured[0] || latest[0]) && (
                         <Link
                           to={`/article/${(featured[0] || latest[0]).slug}`}
-                          className="block group relative overflow-hidden rounded-2xl gold-border card-hover"
+                          className="block group relative overflow-hidden rounded-2xl border border-border card-hover"
                         >
                           <div className="aspect-[16/9] overflow-hidden">
                             <img
@@ -143,16 +144,16 @@ export default function Index() {
                       <HotList articles={latest} />
                     </div>
                   </div>
-                ) : null}
+                )}
               </section>
             )}
 
-            {/* Dhaka Heralds Own Posts — Auto Slider */}
+            {/* Dhaka Heralds Own Posts */}
             {ownPosts.length > 0 && (
               <section className="mb-10">
                 <div className="flex items-center gap-3 mb-5">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Newspaper size={18} className="text-primary" /> Dhaka Heralds Posts
                   </h2>
                   <span className="flex-1 h-px bg-border" />
@@ -161,12 +162,12 @@ export default function Index() {
               </section>
             )}
 
-            {/* Latest News — Auto Slider */}
+            {/* Latest News Slider */}
             {latest.length > 0 && (
               <section className="mb-10">
                 <div className="flex items-center gap-3 mb-5">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <TrendingUp size={18} className="text-primary" /> Latest News
                   </h2>
                   <span className="flex-1 h-px bg-border" />
@@ -178,18 +179,18 @@ export default function Index() {
               </section>
             )}
 
-            {/* For You — personalized */}
+            {/* For You */}
             <ForYouFeed />
 
-            {/* Trending Now */}
+            {/* Trending */}
             <TrendingNews />
 
-            {/* World News Grid */}
+            {/* World News */}
             {worldNews.length > 0 && (
               <section className="mb-10">
                 <div className="flex items-center gap-3 mb-5">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Globe size={18} className="text-primary" /> World News
                   </h2>
                   <span className="flex-1 h-px bg-border" />
@@ -205,12 +206,12 @@ export default function Index() {
               </section>
             )}
 
-            {/* Bangladesh News Grid */}
+            {/* Bangladesh News */}
             {bdNews.length > 0 && (
               <section className="mb-10">
                 <div className="flex items-center gap-3 mb-5">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text">🇧🇩 Bangladesh</h2>
+                  <h2 className="text-xl font-bold text-foreground">🇧🇩 Bangladesh</h2>
                   <span className="flex-1 h-px bg-border" />
                   <Link to="/category/bangladesh" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
                     More <ChevronRight size={14} />
@@ -224,19 +225,19 @@ export default function Index() {
               </section>
             )}
 
-            {/* Videos */}
-            {(featuredVideos.length > 0 || latestVideos.length > 0) && (
-              <section className="mb-12 bg-card rounded-2xl p-6 gold-border">
+            {/* Videos with Embedded Players */}
+            {allVideos.length > 0 && (
+              <section className="mb-12 bg-card rounded-2xl p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Play size={18} className="text-primary" fill="currentColor" /> Videos
                   </h2>
                   <span className="flex-1 h-px bg-border" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {(featuredVideos.length > 0 ? featuredVideos : latestVideos.slice(0, 3)).map(v => (
-                    <VideoCard key={v.id} video={v} variant="featured" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {allVideos.slice(0, 3).map(v => (
+                    <VideoCard key={v.id} video={v} variant="embed" />
                   ))}
                 </div>
                 {latestVideos.length > 3 && (
@@ -254,7 +255,7 @@ export default function Index() {
               <section className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold gold-text">More Stories</h2>
+                  <h2 className="text-xl font-bold text-foreground">More Stories</h2>
                   <span className="flex-1 h-px bg-border" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -269,7 +270,7 @@ export default function Index() {
             {!hasContent && (
               <div className="text-center py-20">
                 <img src={logo} alt="Dhaka Heralds" className="h-24 w-24 rounded-full object-cover ring-2 ring-primary/30 mx-auto mb-6" />
-                <h2 className="text-2xl font-bold gold-text mb-2">Welcome to Dhaka Heralds</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Welcome to Dhaka Heralds</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
                   No published articles yet. Check the AI-curated sections above for the latest news.
                 </p>
