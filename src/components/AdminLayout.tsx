@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe, Share2 } from 'lucide-react';
+import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe, Share2, Megaphone, Bot, Link2 } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
@@ -11,6 +11,9 @@ const navItems = [
   { icon: Image, label: 'Media Library', path: '/admin/media' },
   { icon: Tag, label: 'Categories', path: '/admin/categories' },
   { icon: Share2, label: 'Social Media', path: '/admin/social' },
+  { icon: Link2, label: 'Social Posts', path: '/admin/social-posts' },
+  { icon: Megaphone, label: 'Advertisements', path: '/admin/ads' },
+  { icon: Bot, label: 'AI Settings', path: '/admin/ai-settings' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
