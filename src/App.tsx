@@ -19,6 +19,9 @@ import AdminVideos from "./pages/admin/AdminVideos";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminSocial from "./pages/admin/AdminSocial";
+import AdminAds from "./pages/admin/AdminAds";
+import AdminAISettings from "./pages/admin/AdminAISettings";
+import AdminSocialPosts from "./pages/admin/AdminSocialPosts";
 import AdminRoute from "./components/AdminRoute";
 import AIChatbot from "./components/AIChatbot";
 import InstallPWA from "./components/InstallPWA";
@@ -47,6 +50,9 @@ const App = () => (
             <Route path="/admin/media" element={<AdminRoute><AdminMedia /></AdminRoute>} />
             <Route path="/admin/categories" element={<AdminRoute><AdminCategories /></AdminRoute>} />
             <Route path="/admin/social" element={<AdminRoute><AdminSocial /></AdminRoute>} />
+            <Route path="/admin/social-posts" element={<AdminRoute><AdminSocialPosts /></AdminRoute>} />
+            <Route path="/admin/ads" element={<AdminRoute><AdminAds /></AdminRoute>} />
+            <Route path="/admin/ai-settings" element={<AdminRoute><AdminAISettings /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <AIChatbot />

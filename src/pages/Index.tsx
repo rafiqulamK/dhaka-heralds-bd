@@ -10,6 +10,8 @@ import TrendingNews from '@/components/TrendingNews';
 import ForYouFeed from '@/components/ForYouFeed';
 import OnboardingModal from '@/components/OnboardingModal';
 import AutoSliderCarousel from '@/components/AutoSliderCarousel';
+import SocialPostsSection from '@/components/SocialPostsSection';
+import AdBanner from '@/components/AdBanner';
 import { Link } from 'react-router-dom';
 import { Play, ChevronRight, Zap, Newspaper, Globe, TrendingUp } from 'lucide-react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
@@ -92,6 +94,9 @@ export default function Index() {
           </div>
         </div>
       </div>
+
+      {/* Header Ad Banner */}
+      <AdBanner placement="header-banner" className="max-w-7xl mx-auto px-4 md:px-8 mt-4" />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
         {loading ? (
@@ -185,6 +190,12 @@ export default function Index() {
             {/* Trending */}
             <TrendingNews />
 
+            {/* In-feed Ad */}
+            <AdBanner placement="in-feed" className="mb-10" />
+
+            {/* Social Feed from admin-shared URLs */}
+            <SocialPostsSection />
+
             {/* World News */}
             {worldNews.length > 0 && (
               <section className="mb-10">
@@ -224,6 +235,9 @@ export default function Index() {
                 </div>
               </section>
             )}
+
+            {/* Between-sections Ad */}
+            <AdBanner placement="between-sections" className="mb-10" />
 
             {/* Videos with Embedded Players */}
             {allVideos.length > 0 && (
@@ -265,6 +279,9 @@ export default function Index() {
                 </div>
               </section>
             )}
+
+            {/* Article bottom Ad */}
+            <AdBanner placement="article-bottom" className="mb-10" />
 
             {/* Empty state */}
             {!hasContent && (
