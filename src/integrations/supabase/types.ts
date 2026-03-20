@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      advertisements: {
+        Row: {
+          click_count: number | null
+          created_at: string
+          end_date: string | null
+          id: string
+          image_url: string
+          impression_count: number | null
+          is_active: boolean
+          link_url: string | null
+          placement: string
+          size: string
+          start_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          click_count?: number | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          image_url: string
+          impression_count?: number | null
+          is_active?: boolean
+          link_url?: string | null
+          placement?: string
+          size?: string
+          start_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          click_count?: number | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          image_url?: string
+          impression_count?: number | null
+          is_active?: boolean
+          link_url?: string | null
+          placement?: string
+          size?: string
+          start_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ai_settings: {
+        Row: {
+          api_key: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          model: string | null
+          provider: string
+          updated_at: string
+        }
+        Insert: {
+          api_key?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          model?: string | null
+          provider?: string
+          updated_at?: string
+        }
+        Update: {
+          api_key?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          model?: string | null
+          provider?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       articles: {
         Row: {
           author_id: string | null
@@ -165,6 +243,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      social_posts: {
+        Row: {
+          category_id: string | null
+          content: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          platform: string
+          published_at: string | null
+          status: string
+          title: string | null
+          url: string
+          video_embed_url: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          platform: string
+          published_at?: string | null
+          status?: string
+          title?: string | null
+          url: string
+          video_embed_url?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          platform?: string
+          published_at?: string | null
+          status?: string
+          title?: string | null
+          url?: string
+          video_embed_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_preferences: {
         Row: {
