@@ -22,6 +22,7 @@ import AdminSocial from "./pages/admin/AdminSocial";
 import AdminAds from "./pages/admin/AdminAds";
 import AdminAISettings from "./pages/admin/AdminAISettings";
 import AdminSocialPosts from "./pages/admin/AdminSocialPosts";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminRoute from "./components/AdminRoute";
 import AIChatbot from "./components/AIChatbot";
 import InstallPWA from "./components/InstallPWA";
