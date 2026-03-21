@@ -22,6 +22,7 @@ import AdminSocial from "./pages/admin/AdminSocial";
 import AdminAds from "./pages/admin/AdminAds";
 import AdminAISettings from "./pages/admin/AdminAISettings";
 import AdminSocialPosts from "./pages/admin/AdminSocialPosts";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminRoute from "./components/AdminRoute";
 import AIChatbot from "./components/AIChatbot";
 import InstallPWA from "./components/InstallPWA";
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/admin/social-posts" element={<AdminRoute><AdminSocialPosts /></AdminRoute>} />
             <Route path="/admin/ads" element={<AdminRoute><AdminAds /></AdminRoute>} />
             <Route path="/admin/ai-settings" element={<AdminRoute><AdminAISettings /></AdminRoute>} />
+            <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <AIChatbot />
