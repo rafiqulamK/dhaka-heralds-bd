@@ -54,4 +54,5 @@ const AdBanner = React.forwardRef<HTMLDivElement, { placement?: string; classNam
   }
 
   return content;
-}
+});
+export default AdBanner;

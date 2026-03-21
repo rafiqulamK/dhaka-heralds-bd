@@ -120,4 +120,5 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function 
       </div>
     </Link>
   );
-}
+});
+export default ArticleCard;

@@ -134,4 +134,5 @@ const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function Vide
       </div>
     </Link>
   );
-}
+});
+export default VideoCard;
