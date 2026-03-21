@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getLocalInterests } from '@/components/OnboardingModal';
+import ArticleCard from '@/components/ArticleCard';
 import { Sparkles, RefreshCw, Loader2, ChevronDown, ChevronUp, ExternalLink, Clock, ShieldCheck, ShieldAlert, HelpCircle } from 'lucide-react';
 
 interface ForYouStory {
@@ -22,14 +23,29 @@ const FACT_ICONS: Record<string, JSX.Element> = {
 };
 
 const CACHE_KEY = 'dh_foryou_cache';
-const CACHE_TTL = 15 * 60 * 1000; // 15 minutes — reduces API calls
+const CACHE_TTL = 15 * 60 * 1000;
 
 export default function ForYouFeed() {
   const [stories, setStories] = useState<ForYouStory[]>([]);
+  const [dbArticles, setDbArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [interests] = useState(() => getLocalInterests());
-  const hasFetched = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
+
+  // Always load some DB articles as fallback
+  useEffect(() => {
+    const loadDb = async () => {
+      const { data } = await supabase
+        .from('articles')
+        .select('*, categories(name, slug)')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(6);
+      setDbArticles(data || []);
+    };
+    loadDb();
+  }, []);
 
   const fetchForYou = useCallback(async (force = false) => {
     if (!force) {
@@ -66,13 +82,17 @@ export default function ForYouFeed() {
   }, [interests]);
 
   useEffect(() => {
-    if (interests.length > 0 && !hasFetched[0]) {
-      hasFetched[1](true);
+    if (interests.length > 0 && !hasFetched) {
+      setHasFetched(true);
       fetchForYou();
     }
   }, [interests.length, fetchForYou, hasFetched]);
 
-  if (interests.length === 0 && stories.length === 0) return null;
+  // Show nothing if no interests AND no db articles
+  if (interests.length === 0 && stories.length === 0 && dbArticles.length === 0) return null;
+
+  const showAiStories = stories.length > 0;
+  const showFallback = !showAiStories && !loading && dbArticles.length > 0;
 
   return (
     <section className="mb-12">
@@ -82,27 +102,29 @@ export default function ForYouFeed() {
           <Sparkles size={18} className="text-accent" /> For You
         </h2>
         <span className="flex-1 h-px bg-border" />
-        <button
-          onClick={() => fetchForYou(true)}
-          disabled={loading}
-          className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 disabled:opacity-50"
-        >
-          {loading ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
-          Refresh
-        </button>
+        {interests.length > 0 && (
+          <button
+            onClick={() => fetchForYou(true)}
+            disabled={loading}
+            className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 disabled:opacity-50"
+          >
+            {loading ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
+            Refresh
+          </button>
+        )}
       </div>
 
-      {loading && stories.length === 0 ? (
+      {loading && stories.length === 0 && dbArticles.length === 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-card rounded-xl gold-border p-4 space-y-3">
+            <div key={i} className="bg-card rounded-xl border border-border p-4 space-y-3">
               <div className="h-40 bg-muted animate-pulse rounded-lg" />
               <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
               <div className="h-3 bg-muted animate-pulse rounded w-1/2" />
             </div>
           ))}
         </div>
-      ) : stories.length > 0 ? (
+      ) : showAiStories ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {stories.map((story, i) => {
             const isExpanded = expandedIdx === i;
@@ -110,7 +132,7 @@ export default function ForYouFeed() {
               <div
                 key={i}
                 onClick={() => setExpandedIdx(isExpanded ? null : i)}
-                className="bg-card rounded-xl gold-border overflow-hidden card-hover cursor-pointer flex flex-col"
+                className="bg-card rounded-xl border border-border overflow-hidden card-hover cursor-pointer flex flex-col"
               >
                 <div className="aspect-[16/9] overflow-hidden relative">
                   <img src={story.image_url!} alt={story.title} className="w-full h-full object-cover" />
@@ -145,17 +167,32 @@ export default function ForYouFeed() {
             );
           })}
         </div>
+      ) : showFallback ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {dbArticles.map(a => (
+            <ArticleCard key={a.id} article={a} />
+          ))}
+        </div>
       ) : (
-        <div className="text-center py-8 bg-card rounded-xl gold-border">
-          <p className="text-muted-foreground text-sm">No personalized stories yet. Try refreshing.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(loading ? [] : dbArticles).map(a => (
+            <ArticleCard key={a.id} article={a} />
+          ))}
+          {dbArticles.length === 0 && !loading && (
+            <div className="col-span-full text-center py-8 bg-card rounded-xl border border-border">
+              <p className="text-muted-foreground text-sm">Select your interests in settings to get personalized stories.</p>
+            </div>
+          )}
         </div>
       )}
 
-      <div className="mt-2 text-center">
-        <p className="text-[10px] text-muted-foreground italic">
-          🤖 Personalized based on your interests: {interests.join(', ')}
-        </p>
-      </div>
+      {interests.length > 0 && (
+        <div className="mt-2 text-center">
+          <p className="text-[10px] text-muted-foreground italic">
+            🤖 Personalized based on your interests: {interests.join(', ')}
+          </p>
+        </div>
+      )}
     </section>
   );
 }
