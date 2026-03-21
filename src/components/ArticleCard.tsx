@@ -18,7 +18,7 @@ interface ArticleCardProps {
   variant?: 'default' | 'featured' | 'compact' | 'horizontal';
 }
 
-export default function ArticleCard({ article, variant = 'default' }: ArticleCardProps) {
+const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function ArticleCard({ article, variant = 'default' }, ref) {
   const timeAgo = (date: string) => {
     const diff = Date.now() - new Date(date).getTime();
     const h = Math.floor(diff / 3600000);
