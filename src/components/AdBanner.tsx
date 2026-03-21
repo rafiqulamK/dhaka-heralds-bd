@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Ad {
@@ -10,7 +10,7 @@ interface Ad {
   size: string;
 }
 
-export default function AdBanner({ placement = 'sidebar', className = '' }: { placement?: string; className?: string }) {
+const AdBanner = React.forwardRef<HTMLDivElement, { placement?: string; className?: string }>(function AdBanner({ placement = 'sidebar', className = '' }, ref) {
   const [ad, setAd] = useState<Ad | null>(null);
 
   useEffect(() => {
@@ -54,4 +54,5 @@ export default function AdBanner({ placement = 'sidebar', className = '' }: { pl
   }
 
   return content;
-}
+});
+export default AdBanner;

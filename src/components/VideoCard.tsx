@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Clock, Eye } from 'lucide-react';
 import { getVideoEmbedUrl, extractYouTubeId, getYouTubeThumbnail } from '@/lib/video-utils';
@@ -36,7 +37,7 @@ function getSmartThumbnail(video: Video): string {
   return 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80';
 }
 
-export default function VideoCard({ video, variant = 'default' }: VideoCardProps) {
+const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function VideoCard({ video, variant = 'default' }, ref) {
   const imgSrc = getSmartThumbnail(video);
 
   // Embed variant — shows inline YouTube/FB player on homepage
@@ -133,4 +134,5 @@ export default function VideoCard({ video, variant = 'default' }: VideoCardProps
       </div>
     </Link>
   );
-}
+});
+export default VideoCard;

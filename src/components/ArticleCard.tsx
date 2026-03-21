@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Eye } from 'lucide-react';
 
@@ -17,7 +18,7 @@ interface ArticleCardProps {
   variant?: 'default' | 'featured' | 'compact' | 'horizontal';
 }
 
-export default function ArticleCard({ article, variant = 'default' }: ArticleCardProps) {
+const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function ArticleCard({ article, variant = 'default' }, ref) {
   const timeAgo = (date: string) => {
     const diff = Date.now() - new Date(date).getTime();
     const h = Math.floor(diff / 3600000);
@@ -119,4 +120,5 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
       </div>
     </Link>
   );
-}
+});
+export default ArticleCard;
