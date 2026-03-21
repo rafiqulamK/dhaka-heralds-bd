@@ -10,7 +10,7 @@ interface Ad {
   size: string;
 }
 
-export default function AdBanner({ placement = 'sidebar', className = '' }: { placement?: string; className?: string }) {
+const AdBanner = React.forwardRef<HTMLDivElement, { placement?: string; className?: string }>(function AdBanner({ placement = 'sidebar', className = '' }, ref) {
   const [ad, setAd] = useState<Ad | null>(null);
 
   useEffect(() => {
