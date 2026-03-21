@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe, Share2, Megaphone, Bot, Link2 } from 'lucide-react';
+import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe, Share2, Megaphone, Bot, Link2, BarChart3 } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
