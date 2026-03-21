@@ -14,6 +14,7 @@ const navItems = [
   { icon: Link2, label: 'Social Posts', path: '/admin/social-posts' },
   { icon: Megaphone, label: 'Advertisements', path: '/admin/ads' },
   { icon: Bot, label: 'AI Settings', path: '/admin/ai-settings' },
+  { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
