@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Clock, Eye } from 'lucide-react';
 import { getVideoEmbedUrl, extractYouTubeId, getYouTubeThumbnail } from '@/lib/video-utils';
