@@ -13,12 +13,6 @@ interface Article {
   categories?: { name: string; slug: string } | null;
 }
 
-interface AutoSliderCarouselProps {
-  articles: Article[];
-  interval?: number;
-}
-
-// Category-specific fallback images from Unsplash
 const CATEGORY_IMAGES: Record<string, string> = {
   bangladesh: 'https://images.unsplash.com/photo-1617634382730-9d0e6f4b0e09?w=600&q=80',
   world: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80',
@@ -28,16 +22,13 @@ const CATEGORY_IMAGES: Record<string, string> = {
   sports: 'https://images.unsplash.com/photo-1461896836934-bd45ba8bf8bd?w=600&q=80',
   culture: 'https://images.unsplash.com/photo-1533669955142-6a73332af4db?w=600&q=80',
   science: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&q=80',
-  health: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80',
-  entertainment: 'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=600&q=80',
 };
 
 const DEFAULT_IMG = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80';
 
 function getArticleImage(article: Article): string {
   if (article.cover_image_url) return article.cover_image_url;
-  const catSlug = article.categories?.slug?.toLowerCase() || '';
-  return CATEGORY_IMAGES[catSlug] || DEFAULT_IMG;
+  return CATEGORY_IMAGES[article.categories?.slug?.toLowerCase() || ''] || DEFAULT_IMG;
 }
 
 function timeAgo(date: string) {
@@ -48,7 +39,7 @@ function timeAgo(date: string) {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-export default function AutoSliderCarousel({ articles }: AutoSliderCarouselProps) {
+export default function AutoSliderCarousel({ articles }: { articles: Article[] }) {
   const [offset, setOffset] = useState(0);
   const [paused, setPaused] = useState(false);
   const animRef = useRef<number>();
@@ -60,7 +51,6 @@ export default function AutoSliderCarousel({ articles }: AutoSliderCarouselProps
     if (!lastTimeRef.current) lastTimeRef.current = timestamp;
     const delta = timestamp - lastTimeRef.current;
     lastTimeRef.current = timestamp;
-
     if (!paused && delta < 100) {
       setOffset(prev => {
         const next = prev + 0.5 * (delta / 16);
@@ -86,10 +76,10 @@ export default function AutoSliderCarousel({ articles }: AutoSliderCarouselProps
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-      <div className="flex gap-4" style={{ transform: `translateX(-${offset}px)` }}>
+      <div className="flex gap-5" style={{ transform: `translateX(-${offset}px)` }}>
         {displayArticles.map((article, i) => (
           <Link
             key={`${article.id}-${i}`}
@@ -105,7 +95,7 @@ export default function AutoSliderCarousel({ articles }: AutoSliderCarouselProps
                 onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMG; }}
               />
               {article.categories && (
-                <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">
+                <span className="absolute top-2.5 left-2.5 bg-primary/90 text-primary-foreground text-[9px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest backdrop-blur-sm">
                   {article.categories.name}
                 </span>
               )}
@@ -115,9 +105,9 @@ export default function AutoSliderCarousel({ articles }: AutoSliderCarouselProps
                 {article.title}
               </h3>
               {article.excerpt && (
-                <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{article.excerpt}</p>
+                <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{article.excerpt}</p>
               )}
-              <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-3 mt-2.5 text-[10px] text-muted-foreground">
                 {article.published_at && (
                   <span className="flex items-center gap-1"><Clock size={10} />{timeAgo(article.published_at)}</span>
                 )}

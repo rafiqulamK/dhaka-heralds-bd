@@ -18,6 +18,17 @@ interface ArticleCardProps {
   variant?: 'default' | 'featured' | 'compact' | 'horizontal';
 }
 
+const CATEGORY_IMAGES: Record<string, string> = {
+  bangladesh: 'https://images.unsplash.com/photo-1617634382730-9d0e6f4b0e09?w=600&q=80',
+  world: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80',
+  politics: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600&q=80',
+  business: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80',
+  technology: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',
+  sports: 'https://images.unsplash.com/photo-1461896836934-bd45ba8bf8bd?w=600&q=80',
+  culture: 'https://images.unsplash.com/photo-1533669955142-6a73332af4db?w=600&q=80',
+  science: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&q=80',
+};
+
 const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function ArticleCard({ article, variant = 'default' }, ref) {
   const timeAgo = (date: string) => {
     const diff = Date.now() - new Date(date).getTime();
@@ -27,29 +38,18 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function 
     return `${Math.floor(h / 24)}d ago`;
   };
 
-  const CATEGORY_IMAGES: Record<string, string> = {
-    bangladesh: 'https://images.unsplash.com/photo-1617634382730-9d0e6f4b0e09?w=600&q=80',
-    world: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80',
-    politics: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600&q=80',
-    business: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80',
-    technology: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',
-    sports: 'https://images.unsplash.com/photo-1461896836934-bd45ba8bf8bd?w=600&q=80',
-    culture: 'https://images.unsplash.com/photo-1533669955142-6a73332af4db?w=600&q=80',
-    science: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&q=80',
-  };
-  const placeholderImg = article.cover_image_url || CATEGORY_IMAGES[article.categories?.slug || ''] || `https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80`;
-  const imgSrc = placeholderImg;
+  const imgSrc = article.cover_image_url || CATEGORY_IMAGES[article.categories?.slug || ''] || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80';
 
   if (variant === 'featured') {
     return (
-      <Link to={`/article/${article.slug}`} className="block group relative overflow-hidden rounded-2xl gold-border card-hover h-full">
+      <Link to={`/article/${article.slug}`} className="block group relative overflow-hidden rounded-2xl border border-border card-hover h-full">
         <div className="aspect-[16/10] overflow-hidden">
           <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-6">
           {article.categories && (
-            <span className="inline-block bg-primary text-primary-foreground text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-2 uppercase tracking-widest">
+            <span className="inline-block bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-lg mb-2 uppercase tracking-widest">
               {article.categories.name}
             </span>
           )}
@@ -70,8 +70,8 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function 
 
   if (variant === 'horizontal') {
     return (
-      <Link to={`/article/${article.slug}`} className="flex gap-3 group card-hover p-2 rounded-xl hover:bg-muted/50 transition-colors">
-        <div className="w-24 h-20 shrink-0 overflow-hidden rounded-lg">
+      <Link to={`/article/${article.slug}`} className="flex gap-4 group card-hover p-3 rounded-xl hover:bg-muted/40 transition-all">
+        <div className="w-28 h-20 shrink-0 overflow-hidden rounded-xl">
           <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         </div>
         <div className="flex-1 min-w-0">
@@ -80,7 +80,7 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function 
           )}
           <h3 className="text-sm font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors mt-0.5">{article.title}</h3>
           {article.published_at && (
-            <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1"><Clock size={10} />{timeAgo(article.published_at)}</span>
+            <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1.5"><Clock size={10} />{timeAgo(article.published_at)}</span>
           )}
         </div>
       </Link>
@@ -101,18 +101,19 @@ const ArticleCard = React.forwardRef<HTMLDivElement, ArticleCardProps>(function 
     );
   }
 
-  // Default card — Apple News magazine style
   return (
-    <Link to={`/article/${article.slug}`} className="block group rounded-2xl overflow-hidden gold-border card-hover bg-card">
-      <div className="aspect-[16/9] overflow-hidden">
+    <Link to={`/article/${article.slug}`} className="block group rounded-2xl overflow-hidden border border-border card-hover bg-card">
+      <div className="aspect-[16/9] overflow-hidden relative">
         <img src={imgSrc} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+        {article.categories && (
+          <span className="absolute top-3 left-3 bg-primary/90 text-primary-foreground text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest backdrop-blur-sm">
+            {article.categories.name}
+          </span>
+        )}
       </div>
       <div className="p-5">
-        {article.categories && (
-          <span className="text-primary text-[10px] font-bold uppercase tracking-widest">{article.categories.name}</span>
-        )}
-        <h3 className="text-base font-bold text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors leading-snug">{article.title}</h3>
-        {article.excerpt && <p className="text-muted-foreground text-sm mt-1.5 line-clamp-2">{article.excerpt}</p>}
+        <h3 className="text-base font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug">{article.title}</h3>
+        {article.excerpt && <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{article.excerpt}</p>}
         <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
           {article.published_at && <span className="flex items-center gap-1"><Clock size={11} />{timeAgo(article.published_at)}</span>}
           {article.view_count != null && <span className="flex items-center gap-1"><Eye size={11} />{article.view_count.toLocaleString()}</span>}

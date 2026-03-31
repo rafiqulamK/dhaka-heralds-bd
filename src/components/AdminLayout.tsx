@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe, Share2, Megaphone, Bot, Link2, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, FileText, Video, Image, Tag, LogOut, Menu, X, ChevronRight, Globe, Share2, Megaphone, Link2, BarChart3 } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
@@ -13,7 +13,6 @@ const navItems = [
   { icon: Share2, label: 'Social Media', path: '/admin/social' },
   { icon: Link2, label: 'Social Posts', path: '/admin/social-posts' },
   { icon: Megaphone, label: 'Advertisements', path: '/admin/ads' },
-  { icon: Bot, label: 'AI Settings', path: '/admin/ai-settings' },
   { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
 ];
 
@@ -29,7 +28,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   const Sidebar = () => (
-    <aside className="w-64 h-full bg-card/80 backdrop-blur-xl border-r border-border flex flex-col">
+    <aside className="w-64 h-full glass border-r border-border flex flex-col">
       <div className="p-5 border-b border-border">
         <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="Dhaka Heralds" className="h-10 w-10 rounded-xl object-cover ring-1 ring-border" />
@@ -39,7 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </Link>
       </div>
-      <nav className="flex-1 p-3 space-y-0.5">
+      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {navItems.map(({ icon: Icon, label, path }) => {
           const active = location.pathname === path;
           return (
@@ -61,7 +60,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         })}
       </nav>
 
-      {/* View Site link */}
       <div className="px-3 pb-2">
         <Link
           to="/"
@@ -94,12 +92,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Desktop Sidebar */}
       <div className="hidden md:block w-64 h-screen sticky top-0">
         <Sidebar />
       </div>
 
-      {/* Mobile Sidebar */}
       {sidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div className="w-64 h-full"><Sidebar /></div>
@@ -107,9 +103,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       )}
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="md:hidden bg-card/80 backdrop-blur-xl border-b border-border px-4 py-3 flex items-center gap-3 sticky top-0 z-40">
+        <header className="md:hidden glass border-b border-border px-4 py-3 flex items-center gap-3 sticky top-0 z-40">
           <button onClick={() => setSidebarOpen(true)} className="text-muted-foreground hover:text-foreground">
             <Menu size={20} />
           </button>

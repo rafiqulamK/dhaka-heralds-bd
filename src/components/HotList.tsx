@@ -9,11 +9,7 @@ interface HotListItem {
   categories?: { name: string; slug: string } | null;
 }
 
-interface HotListProps {
-  articles: HotListItem[];
-}
-
-export default function HotList({ articles }: HotListProps) {
+export default function HotList({ articles }: { articles: HotListItem[] }) {
   const sorted = [...articles].sort((a, b) => (b.view_count || 0) - (a.view_count || 0)).slice(0, 8);
 
   const getHeatColor = (index: number) => {
@@ -24,8 +20,8 @@ export default function HotList({ articles }: HotListProps) {
   };
 
   return (
-    <div className="bg-card rounded-xl gold-border p-5">
-      <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2">
+    <div className="bg-card rounded-2xl border border-border p-5">
+      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
         <Flame size={16} className="text-destructive" />
         Hot List
         <TrendingUp size={14} className="text-primary ml-auto" />
@@ -35,9 +31,9 @@ export default function HotList({ articles }: HotListProps) {
           <Link
             key={article.id}
             to={`/article/${article.slug}`}
-            className="flex items-start gap-3 py-2.5 group border-b border-border/50 last:border-0 hover:bg-muted/50 -mx-2 px-2 rounded transition-colors"
+            className="flex items-start gap-3 py-2.5 group border-b border-border/50 last:border-0 hover:bg-muted/40 -mx-2 px-2 rounded-xl transition-colors"
           >
-            <span className={`shrink-0 w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${getHeatColor(i)}`}>
+            <span className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${getHeatColor(i)}`}>
               {i + 1}
             </span>
             <div className="flex-1 min-w-0">

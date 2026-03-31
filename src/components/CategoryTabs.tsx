@@ -18,9 +18,9 @@ export default function CategoryTabs() {
   const activeSlug = pathname.startsWith('/category/') ? pathname.split('/')[2] : '';
 
   return (
-    <div className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-[105px] z-40">
+    <div className="glass border-b border-border/50 sticky top-16 z-40">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-2.5">
           {categories.map(({ name, slug, icon: Icon }) => {
             const isActive = slug === activeSlug;
             const to = slug ? `/category/${slug}` : '/';
@@ -28,10 +28,10 @@ export default function CategoryTabs() {
               <Link
                 key={slug}
                 to={to}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all shrink-0 ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all shrink-0 ${
                   isActive
                     ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
                 }`}
               >
                 <Icon size={14} />
