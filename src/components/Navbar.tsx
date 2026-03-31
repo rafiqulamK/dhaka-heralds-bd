@@ -21,31 +21,31 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 h-14 flex items-center justify-between gap-4">
-        {/* Logo — clean Apple News style */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <img src={logo} alt="Dhaka Heralds" className="h-9 w-9 rounded-full object-cover" />
-          <span className="text-lg font-bold text-primary hidden sm:block tracking-tight">Dhaka Heralds</span>
+    <header className="sticky top-0 z-50 glass border-b border-border/50">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+        <Link to="/" className="flex items-center gap-3 shrink-0 group">
+          <img src={logo} alt="Dhaka Heralds" className="h-10 w-10 rounded-xl object-cover ring-1 ring-border group-hover:ring-primary/50 transition-all" />
+          <div className="hidden sm:block">
+            <span className="text-lg font-bold gradient-text tracking-tight">Dhaka Heralds</span>
+            <p className="text-[10px] text-muted-foreground tracking-widest uppercase -mt-0.5">International News</p>
+          </div>
         </Link>
 
-        {/* Desktop nav — minimal */}
         <nav className="hidden lg:flex items-center gap-1">
           {navLinks.map(link => (
             <Link
               key={link.path}
               to={link.path}
-              className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted"
+              className="px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-muted/60"
             >
               {link.name}
             </Link>
           ))}
         </nav>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-1">
           <PushNotificationToggle />
-          <button onClick={toggle} className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted" title="Toggle theme">
+          <button onClick={toggle} className="p-2.5 text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-muted/60" title="Toggle theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
@@ -55,35 +55,34 @@ export default function Navbar() {
                 autoFocus
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm w-44 focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-muted-foreground"
+                placeholder="Search news..."
+                className="bg-muted border border-border rounded-xl px-3.5 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
               />
-              <button type="button" onClick={() => setSearchOpen(false)} className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted">
+              <button type="button" onClick={() => setSearchOpen(false)} className="p-2 text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60">
                 <X size={16} />
               </button>
             </form>
           ) : (
-            <button onClick={() => setSearchOpen(true)} className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted">
+            <button onClick={() => setSearchOpen(true)} className="p-2.5 text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-muted/60">
               <Search size={18} />
             </button>
           )}
 
-          <button className="lg:hidden p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted" onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="lg:hidden p-2.5 text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden border-t border-border bg-card px-4 py-3">
+        <div className="lg:hidden border-t border-border glass px-4 py-3 animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-0.5">
             {navLinks.map(link => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-xl transition-colors"
               >
                 {link.name}
               </Link>

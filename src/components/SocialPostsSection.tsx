@@ -53,18 +53,17 @@ export default function SocialPostsSection() {
   const otherPosts = posts.filter(p => !p.video_embed_url);
 
   return (
-    <section className="mb-10">
-      <div className="flex items-center gap-3 mb-5">
-        <span className="w-1 h-6 bg-primary rounded" />
+    <section className="mb-12">
+      <div className="flex items-center gap-3 mb-6">
+        <span className="w-1 h-7 bg-primary rounded-full" />
         <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-          <Globe size={18} className="text-primary" /> Social Feed
+          <Globe size={20} className="text-primary" /> Social Feed
         </h2>
         <span className="flex-1 h-px bg-border" />
       </div>
 
-      {/* Video embeds */}
       {videoPosts.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
           {videoPosts.slice(0, 3).map(post => (
             <div key={post.id} className="bg-card rounded-2xl border border-border overflow-hidden">
               <div className="aspect-video">
@@ -77,9 +76,9 @@ export default function SocialPostsSection() {
                 />
               </div>
               {post.title && (
-                <div className="p-3">
+                <div className="p-4">
                   <p className="text-sm font-medium text-foreground line-clamp-2">{post.title}</p>
-                  <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                     <span className={getPlatformColor(post.platform)}>{getPlatformIcon(post.platform)}</span>
                     <a href={post.url} target="_blank" rel="noopener noreferrer" className="hover:text-primary flex items-center gap-1">
                       View original <ExternalLink size={10} />
@@ -92,9 +91,8 @@ export default function SocialPostsSection() {
         </div>
       )}
 
-      {/* Non-video posts */}
       {otherPosts.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {otherPosts.slice(0, 8).map(post => (
             <a
               key={post.id}
@@ -108,12 +106,12 @@ export default function SocialPostsSection() {
                   <img src={post.image_url} alt={post.title || ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
               )}
-              <div className="p-3">
+              <div className="p-4">
                 <p className="text-sm font-medium text-foreground line-clamp-2">{post.title || 'Social post'}</p>
-                {post.content && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{post.content}</p>}
-                <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                {post.content && <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{post.content}</p>}
+                <div className="flex items-center gap-2 mt-2.5 text-xs text-muted-foreground">
                   <span className={getPlatformColor(post.platform)}>{getPlatformIcon(post.platform)}</span>
-                  <span>{post.platform}</span>
+                  <span className="capitalize">{post.platform}</span>
                 </div>
               </div>
             </a>

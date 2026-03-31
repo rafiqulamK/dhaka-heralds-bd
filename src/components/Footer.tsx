@@ -21,66 +21,61 @@ function SocialIcon({ type, size = 18 }: { type: string; size?: number }) {
 
 export default function Footer() {
   return (
-    <footer className="bg-primary dark:bg-[hsl(355,60%,6%)] border-t border-border mt-16">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+    <footer className="bg-card border-t border-border mt-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-4">
-              <img src={logo} alt="Dhaka Heralds" className="h-14 w-14 rounded-full object-cover ring-2 ring-accent/50" />
+            <Link to="/" className="flex items-center gap-3 mb-5">
+              <img src={logo} alt="Dhaka Heralds" className="h-12 w-12 rounded-xl object-cover ring-1 ring-border" />
               <div>
-                <div className="text-2xl font-bold text-primary-foreground dark:gold-text">Dhaka Heralds</div>
-                <div className="text-xs text-primary-foreground/70 dark:text-muted-foreground tracking-widest uppercase">International News & Documentary Portal</div>
+                <div className="text-xl font-bold gradient-text">Dhaka Heralds</div>
+                <div className="text-[10px] text-muted-foreground tracking-widest uppercase">International News & Documentary Portal</div>
               </div>
             </Link>
-            <p className="text-primary-foreground/80 dark:text-muted-foreground text-sm leading-relaxed max-w-xs">
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
               Bringing truth to light since day one. Independent journalism and documentary filmmaking covering Bangladesh and beyond.
             </p>
 
-            {/* Social icons */}
-            <div className="mt-4 flex gap-3">
+            <div className="mt-5 flex gap-2.5">
               {socialLinks.map(s => (
-                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-primary-foreground/10 dark:bg-muted flex items-center justify-center text-primary-foreground dark:text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors" title={s.name}>
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-200" title={s.name}>
                   <SocialIcon type={s.icon} size={16} />
                 </a>
               ))}
             </div>
 
-            {/* Contact */}
-            <div className="mt-4 text-sm text-primary-foreground/70 dark:text-muted-foreground space-y-1">
-              <p>For collaboration or contact: <a href="mailto:info@dhakaheralds.com" className="text-accent hover:underline">info@dhakaheralds.com</a></p>
-              <p><a href="https://dhakaheralds.com" className="text-accent hover:underline">www.dhakaheralds.com</a> · @DhakaHeralds</p>
+            <div className="mt-5 text-sm text-muted-foreground space-y-1">
+              <p>For collaboration: <a href="mailto:info@dhakaheralds.com" className="text-primary hover:underline">info@dhakaheralds.com</a></p>
+              <p><a href="https://dhakaheralds.com" className="text-primary hover:underline">www.dhakaheralds.com</a></p>
             </div>
           </div>
 
-          {/* Sections */}
           <div>
-            <h4 className="text-sm font-bold text-accent mb-3 uppercase tracking-wider">Sections</h4>
-            <ul className="space-y-2 text-sm text-primary-foreground/80 dark:text-muted-foreground">
+            <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Sections</h4>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
               {['Bangladesh', 'World', 'Politics', 'Business', 'Documentaries', 'Culture', 'Sports'].map(s => (
                 <li key={s}>
-                  <Link to={`/category/${s.toLowerCase()}`} className="hover:text-accent transition-colors">{s}</Link>
+                  <Link to={`/category/${s.toLowerCase()}`} className="hover:text-foreground transition-colors">{s}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Company */}
           <div>
-            <h4 className="text-sm font-bold text-accent mb-3 uppercase tracking-wider">Company</h4>
-            <ul className="space-y-2 text-sm text-primary-foreground/80 dark:text-muted-foreground">
-              <li><Link to="/about" className="hover:text-accent transition-colors">About Us</Link></li>
-              <li><Link to="/fact-check" className="hover:text-accent transition-colors">Fact-Check</Link></li>
-              <li><a href="mailto:info@dhakaheralds.com" className="hover:text-accent transition-colors">Contact</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Terms of Service</a></li>
+            <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Company</h4>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li><Link to="/about" className="hover:text-foreground transition-colors">About Us</Link></li>
+              <li><Link to="/fact-check" className="hover:text-foreground transition-colors">Fact-Check</Link></li>
+              <li><a href="mailto:info@dhakaheralds.com" className="hover:text-foreground transition-colors">Contact</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-primary-foreground/20 dark:border-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-primary-foreground/70 dark:text-muted-foreground">
+        <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <span>© {new Date().getFullYear()} Dhaka Heralds. All rights reserved.</span>
-          <span className="text-accent font-medium">Illuminating Truth. One Story at a Time.</span>
+          <span className="gradient-text font-semibold">Illuminating Truth. One Story at a Time.</span>
         </div>
       </div>
     </footer>
