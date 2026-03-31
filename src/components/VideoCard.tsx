@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Clock, Eye } from 'lucide-react';
+import { Play, Eye } from 'lucide-react';
 import { getVideoEmbedUrl, extractYouTubeId, getYouTubeThumbnail } from '@/lib/video-utils';
 
 interface Video {
@@ -18,11 +18,6 @@ interface Video {
   categories?: { name: string } | null;
 }
 
-interface VideoCardProps {
-  video: Video;
-  variant?: 'default' | 'featured' | 'compact' | 'embed';
-}
-
 const formatDuration = (s: number) => {
   const m = Math.floor(s / 60);
   const sec = s % 60;
@@ -37,10 +32,9 @@ function getSmartThumbnail(video: Video): string {
   return 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80';
 }
 
-const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function VideoCard({ video, variant = 'default' }, ref) {
+const VideoCard = React.forwardRef<HTMLDivElement, { video: Video; variant?: 'default' | 'featured' | 'compact' | 'embed' }>(function VideoCard({ video, variant = 'default' }, ref) {
   const imgSrc = getSmartThumbnail(video);
 
-  // Embed variant — shows inline YouTube/FB player on homepage
   if (variant === 'embed') {
     const { type, embedUrl } = getVideoEmbedUrl(video);
     return (
@@ -58,7 +52,7 @@ const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function Vide
             <Link to={`/video/${video.slug}`} className="block relative w-full h-full group">
               <img src={imgSrc} alt={video.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 flex items-center justify-center bg-background/20">
-                <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center backdrop-blur-sm">
                   <Play size={22} className="text-primary-foreground ml-1" fill="currentColor" />
                 </div>
               </div>
@@ -70,7 +64,7 @@ const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function Vide
             <h3 className="text-sm font-bold text-foreground line-clamp-2 hover:text-primary transition-colors">{video.title}</h3>
           </Link>
           {video.categories && (
-            <span className="text-primary text-[10px] font-bold uppercase tracking-wide">{video.categories.name}</span>
+            <span className="text-primary text-[10px] font-bold uppercase tracking-wide mt-1 block">{video.categories.name}</span>
           )}
         </div>
       </div>
@@ -79,46 +73,45 @@ const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function Vide
 
   if (variant === 'featured') {
     return (
-      <Link to={`/video/${video.slug}`} className="block group relative overflow-hidden rounded-lg border border-border card-hover">
+      <Link to={`/video/${video.slug}`} className="block group relative overflow-hidden rounded-2xl border border-border card-hover">
         <div className="aspect-video overflow-hidden">
           <img src={imgSrc} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+            <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg backdrop-blur-sm">
               <Play size={24} className="text-primary-foreground ml-1" fill="currentColor" />
             </div>
           </div>
           {video.duration_seconds && (
-            <span className="absolute bottom-3 right-3 bg-background/90 text-foreground text-xs px-2 py-0.5 rounded font-mono">
+            <span className="absolute bottom-3 right-3 bg-background/90 text-foreground text-xs px-2.5 py-1 rounded-lg font-mono backdrop-blur-sm">
               {formatDuration(video.duration_seconds)}
             </span>
           )}
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-5">
           {video.categories && (
-            <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded mb-2 uppercase">
+            <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-lg mb-2 uppercase">
               {video.categories.name}
             </span>
           )}
           <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{video.title}</h2>
-          {video.description && <p className="text-muted-foreground text-sm mt-1 line-clamp-2">{video.description}</p>}
         </div>
       </Link>
     );
   }
 
   return (
-    <Link to={`/video/${video.slug}`} className="block group rounded-lg overflow-hidden border border-border card-hover bg-card">
+    <Link to={`/video/${video.slug}`} className="block group rounded-2xl overflow-hidden border border-border card-hover bg-card">
       <div className="relative aspect-video overflow-hidden">
         <img src={imgSrc} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div className="absolute inset-0 bg-background/20 group-hover:bg-background/10 transition-colors" />
+        <div className="absolute inset-0 bg-background/10 group-hover:bg-transparent transition-colors" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-primary/80 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 rounded-full bg-primary/80 flex items-center justify-center group-hover:scale-110 transition-transform backdrop-blur-sm">
             <Play size={18} className="text-primary-foreground ml-1" fill="currentColor" />
           </div>
         </div>
         {video.duration_seconds && (
-          <span className="absolute bottom-2 right-2 bg-background/80 text-foreground text-xs px-1.5 py-0.5 rounded font-mono">
+          <span className="absolute bottom-2 right-2 bg-background/80 text-foreground text-xs px-2 py-0.5 rounded-lg font-mono backdrop-blur-sm">
             {formatDuration(video.duration_seconds)}
           </span>
         )}
@@ -127,7 +120,7 @@ const VideoCard = React.forwardRef<HTMLDivElement, VideoCardProps>(function Vide
         {video.categories && (
           <span className="text-primary text-xs font-bold uppercase tracking-wide">{video.categories.name}</span>
         )}
-        <h3 className="text-base font-bold text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">{video.title}</h3>
+        <h3 className="text-sm font-bold text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">{video.title}</h3>
         <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
           {video.view_count != null && <span className="flex items-center gap-1"><Eye size={11} />{video.view_count.toLocaleString()}</span>}
         </div>

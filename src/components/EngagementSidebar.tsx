@@ -40,7 +40,7 @@ export default function EngagementSidebar({ articleTitle, articleUrl }: Engageme
         <button
           key={label}
           onClick={onClick}
-          className={`flex flex-col items-center gap-1 p-3 rounded-full bg-card border border-border shadow-lg hover:shadow-xl transition-all hover:scale-110 ${active ? activeClass : 'text-muted-foreground hover:text-foreground'}`}
+          className={`flex flex-col items-center gap-1 p-3 rounded-2xl glass border border-border shadow-lg hover:shadow-xl transition-all hover:scale-110 ${active ? activeClass : 'text-muted-foreground hover:text-foreground'}`}
         >
           <Icon size={20} />
           <span className="text-[10px] font-medium">{label}</span>

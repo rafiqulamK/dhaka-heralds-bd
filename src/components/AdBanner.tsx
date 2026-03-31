@@ -32,15 +32,14 @@ const AdBanner = React.forwardRef<HTMLDivElement, { placement?: string; classNam
   if (!ad) return null;
 
   const handleClick = async () => {
-    // Track click (fire-and-forget)
     supabase.rpc('increment_ad_click' as any, { ad_id: ad.id }).then(() => {});
   };
 
   const content = (
-    <div className={`rounded-xl overflow-hidden border border-border/50 bg-card relative group ${className}`}>
+    <div ref={ref} className={`rounded-2xl overflow-hidden border border-border bg-card relative group ${className}`}>
       <img src={ad.image_url} alt={ad.title} className="w-full h-auto object-cover" />
-      <div className="absolute bottom-0 left-0 right-0 px-2 py-1 bg-background/80 backdrop-blur-sm">
-        <span className="text-[9px] text-muted-foreground uppercase tracking-widest">Sponsored</span>
+      <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-background/80 backdrop-blur-sm">
+        <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-medium">Sponsored</span>
       </div>
     </div>
   );

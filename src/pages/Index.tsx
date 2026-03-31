@@ -6,7 +6,6 @@ import ArticleCard from '@/components/ArticleCard';
 import CategoryTabs from '@/components/CategoryTabs';
 import HotList from '@/components/HotList';
 import VideoCard from '@/components/VideoCard';
-import TrendingNews from '@/components/TrendingNews';
 import ForYouFeed from '@/components/ForYouFeed';
 import OnboardingModal from '@/components/OnboardingModal';
 import AutoSliderCarousel from '@/components/AutoSliderCarousel';
@@ -27,12 +26,30 @@ const BREAKING_NEWS = [
 function ArticleSkeleton() {
   return (
     <div className="rounded-2xl overflow-hidden bg-card border border-border">
-      <div className="h-52 bg-muted animate-pulse" />
+      <div className="h-48 bg-muted animate-pulse" />
       <div className="p-5 space-y-3">
-        <div className="h-3 w-20 bg-muted animate-pulse rounded-full" />
-        <div className="h-5 w-full bg-muted animate-pulse rounded" />
-        <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+        <div className="h-3 w-24 bg-muted animate-pulse rounded-full" />
+        <div className="h-5 w-full bg-muted animate-pulse rounded-lg" />
+        <div className="h-4 w-3/4 bg-muted animate-pulse rounded-lg" />
       </div>
+    </div>
+  );
+}
+
+function SectionHeader({ icon: Icon, title, link, linkText = 'View All', gradient = false }: { icon?: any; title: string; link?: string; linkText?: string; gradient?: boolean }) {
+  return (
+    <div className="flex items-center gap-3 mb-6">
+      <span className="w-1 h-7 bg-primary rounded-full" />
+      <h2 className={`text-xl font-bold flex items-center gap-2 ${gradient ? 'gradient-text' : 'text-foreground'}`}>
+        {Icon && <Icon size={20} className="text-primary" />}
+        {title}
+      </h2>
+      <span className="flex-1 h-px bg-border" />
+      {link && (
+        <Link to={link} className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 font-medium">
+          {linkText} <ChevronRight size={14} />
+        </Link>
+      )}
     </div>
   );
 }
@@ -82,13 +99,13 @@ export default function Index() {
       <CategoryTabs />
 
       {/* Breaking News Ticker */}
-      <div className="bg-primary/10 border-b border-primary/20 py-2 overflow-hidden">
+      <div className="gradient-bg border-b border-border/50 py-2.5 overflow-hidden">
         <div className="flex items-center">
-          <span className="shrink-0 bg-primary text-primary-foreground text-[11px] font-bold px-3 py-1 mx-4 flex items-center gap-1 uppercase tracking-wider rounded-full">
+          <span className="shrink-0 bg-primary text-primary-foreground text-[11px] font-bold px-3.5 py-1 mx-4 flex items-center gap-1.5 uppercase tracking-wider rounded-lg">
             <Zap size={11} /> Live
           </span>
           <div className="overflow-hidden flex-1">
-            <div className="breaking-ticker whitespace-nowrap text-sm text-foreground/80">
+            <div className="breaking-ticker whitespace-nowrap text-sm text-foreground/80 font-medium">
               {BREAKING_NEWS.join('  •  ')}  •  {BREAKING_NEWS.join('  •  ')}
             </div>
           </div>
@@ -96,90 +113,73 @@ export default function Index() {
       </div>
 
       {/* Header Ad Banner */}
-      <AdBanner placement="header-banner" className="max-w-7xl mx-auto px-4 md:px-8 mt-4" />
+      <AdBanner placement="header-banner" className="max-w-7xl mx-auto px-4 md:px-8 mt-6" />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
             {[...Array(6)].map((_, i) => <ArticleSkeleton key={i} />)}
           </div>
         ) : (
           <>
             {/* Hero */}
             {hasContent && (
-              <section className="mb-10">
-                {(featured.length > 0 || latest.length > 0) && (
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                    <div className="lg:col-span-8">
-                      {(featured[0] || latest[0]) && (
-                        <Link
-                          to={`/article/${(featured[0] || latest[0]).slug}`}
-                          className="block group relative overflow-hidden rounded-2xl border border-border card-hover"
-                        >
-                          <div className="aspect-[16/9] overflow-hidden">
-                            <img
-                              src={(featured[0] || latest[0]).cover_image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80'}
-                              alt={(featured[0] || latest[0]).title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                          </div>
-                          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                            {(featured[0] || latest[0]).categories && (
-                              <span className="inline-block bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest">
-                                {(featured[0] || latest[0]).categories.name}
-                              </span>
-                            )}
-                            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">
-                              {(featured[0] || latest[0]).title}
-                            </h2>
-                            {(featured[0] || latest[0]).excerpt && (
-                              <p className="text-muted-foreground text-sm md:text-base line-clamp-2 max-w-2xl">
-                                {(featured[0] || latest[0]).excerpt}
-                              </p>
-                            )}
-                          </div>
-                        </Link>
-                      )}
-                    </div>
-                    <div className="lg:col-span-4 flex flex-col gap-4">
-                      {(featured.length > 1 ? featured.slice(1, 3) : latest.slice(1, 3)).map(a => (
-                        <ArticleCard key={a.id} article={a} variant="horizontal" />
-                      ))}
-                      <HotList articles={latest} />
-                    </div>
+              <section className="mb-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  <div className="lg:col-span-8">
+                    {(featured[0] || latest[0]) && (
+                      <Link
+                        to={`/article/${(featured[0] || latest[0]).slug}`}
+                        className="block group relative overflow-hidden rounded-2xl border border-border card-hover"
+                      >
+                        <div className="aspect-[16/9] overflow-hidden">
+                          <img
+                            src={(featured[0] || latest[0]).cover_image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80'}
+                            alt={(featured[0] || latest[0]).title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                          {(featured[0] || latest[0]).categories && (
+                            <span className="inline-block bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-lg mb-3 uppercase tracking-widest">
+                              {(featured[0] || latest[0]).categories.name}
+                            </span>
+                          )}
+                          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">
+                            {(featured[0] || latest[0]).title}
+                          </h2>
+                          {(featured[0] || latest[0]).excerpt && (
+                            <p className="text-muted-foreground text-sm md:text-base line-clamp-2 max-w-2xl">
+                              {(featured[0] || latest[0]).excerpt}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    )}
                   </div>
-                )}
+                  <div className="lg:col-span-4 flex flex-col gap-4">
+                    {(featured.length > 1 ? featured.slice(1, 3) : latest.slice(1, 3)).map(a => (
+                      <ArticleCard key={a.id} article={a} variant="horizontal" />
+                    ))}
+                    <HotList articles={latest} />
+                  </div>
+                </div>
               </section>
             )}
 
             {/* Dhaka Heralds Own Posts */}
             {ownPosts.length > 0 && (
-              <section className="mb-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                    <Newspaper size={18} className="text-primary" /> Dhaka Heralds Posts
-                  </h2>
-                  <span className="flex-1 h-px bg-border" />
-                </div>
+              <section className="mb-12">
+                <SectionHeader icon={Newspaper} title="Dhaka Heralds Posts" />
                 <AutoSliderCarousel articles={ownPosts} />
               </section>
             )}
 
             {/* Latest News Slider */}
             {latest.length > 0 && (
-              <section className="mb-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                    <TrendingUp size={18} className="text-primary" /> Latest News
-                  </h2>
-                  <span className="flex-1 h-px bg-border" />
-                  <Link to="/category/world" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
-                    View All <ChevronRight size={14} />
-                  </Link>
-                </div>
+              <section className="mb-12">
+                <SectionHeader icon={TrendingUp} title="Latest News" link="/category/world" />
                 <AutoSliderCarousel articles={latest} />
               </section>
             )}
@@ -187,28 +187,16 @@ export default function Index() {
             {/* For You */}
             <ForYouFeed />
 
-            {/* Trending */}
-            <TrendingNews />
-
             {/* In-feed Ad */}
-            <AdBanner placement="in-feed" className="mb-10" />
+            <AdBanner placement="in-feed" className="mb-12" />
 
-            {/* Social Feed from admin-shared URLs */}
+            {/* Social Feed */}
             <SocialPostsSection />
 
             {/* World News */}
             {worldNews.length > 0 && (
-              <section className="mb-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                    <Globe size={18} className="text-primary" /> World News
-                  </h2>
-                  <span className="flex-1 h-px bg-border" />
-                  <Link to="/category/world" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
-                    More <ChevronRight size={14} />
-                  </Link>
-                </div>
+              <section className="mb-12">
+                <SectionHeader icon={Globe} title="World News" link="/category/world" linkText="More" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {worldNews.slice(0, 8).map(a => (
                     <ArticleCard key={a.id} article={a} />
@@ -219,15 +207,8 @@ export default function Index() {
 
             {/* Bangladesh News */}
             {bdNews.length > 0 && (
-              <section className="mb-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold text-foreground">🇧🇩 Bangladesh</h2>
-                  <span className="flex-1 h-px bg-border" />
-                  <Link to="/category/bangladesh" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
-                    More <ChevronRight size={14} />
-                  </Link>
-                </div>
+              <section className="mb-12">
+                <SectionHeader title="🇧🇩 Bangladesh" link="/category/bangladesh" linkText="More" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {bdNews.slice(0, 8).map(a => (
                     <ArticleCard key={a.id} article={a} />
@@ -237,25 +218,19 @@ export default function Index() {
             )}
 
             {/* Between-sections Ad */}
-            <AdBanner placement="between-sections" className="mb-10" />
+            <AdBanner placement="between-sections" className="mb-12" />
 
-            {/* Videos with Embedded Players */}
+            {/* Videos */}
             {allVideos.length > 0 && (
-              <section className="mb-12 bg-card rounded-2xl p-6 border border-border">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                    <Play size={18} className="text-primary" fill="currentColor" /> Videos
-                  </h2>
-                  <span className="flex-1 h-px bg-border" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <section className="mb-14 bg-card rounded-2xl p-6 md:p-8 border border-border">
+                <SectionHeader icon={Play} title="Videos" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {allVideos.slice(0, 3).map(v => (
                     <VideoCard key={v.id} video={v} variant="embed" />
                   ))}
                 </div>
                 {latestVideos.length > 3 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5">
                     {latestVideos.slice(3, 7).map(v => (
                       <VideoCard key={v.id} video={v} />
                     ))}
@@ -266,12 +241,8 @@ export default function Index() {
 
             {/* More Stories */}
             {latest.length > 8 && (
-              <section className="mb-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="w-1 h-6 bg-primary rounded" />
-                  <h2 className="text-xl font-bold text-foreground">More Stories</h2>
-                  <span className="flex-1 h-px bg-border" />
-                </div>
+              <section className="mb-14">
+                <SectionHeader title="More Stories" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {latest.slice(8, 20).map(a => (
                     <ArticleCard key={a.id} article={a} />
@@ -281,15 +252,15 @@ export default function Index() {
             )}
 
             {/* Article bottom Ad */}
-            <AdBanner placement="article-bottom" className="mb-10" />
+            <AdBanner placement="article-bottom" className="mb-12" />
 
             {/* Empty state */}
             {!hasContent && (
-              <div className="text-center py-20">
-                <img src={logo} alt="Dhaka Heralds" className="h-24 w-24 rounded-full object-cover ring-2 ring-primary/30 mx-auto mb-6" />
-                <h2 className="text-2xl font-bold text-foreground mb-2">Welcome to Dhaka Heralds</h2>
+              <div className="text-center py-24">
+                <img src={logo} alt="Dhaka Heralds" className="h-20 w-20 rounded-2xl object-cover ring-2 ring-border mx-auto mb-6" />
+                <h2 className="text-2xl font-bold gradient-text mb-2">Welcome to Dhaka Heralds</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  No published articles yet. Check the AI-curated sections above for the latest news.
+                  No published articles yet. Check back soon for the latest news.
                 </p>
               </div>
             )}
