@@ -24,6 +24,7 @@ import AdminSocialPosts from "./pages/admin/AdminSocialPosts";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminRoute from "./components/AdminRoute";
 import InstallPWA from "./components/InstallPWA";
+import MessengerButton from "./components/MessengerButton";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <InstallPWA />
+          <MessengerButton />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>

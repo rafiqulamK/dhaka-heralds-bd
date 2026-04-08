@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-5">
-              <img src={logo} alt="Dhaka Heralds" className="h-12 w-12 rounded-xl object-cover ring-1 ring-border" />
+              <img src={logo} alt="Dhaka Heralds" className="h-16 w-16 rounded-xl object-cover ring-1 ring-border" />
               <div>
                 <div className="text-xl font-bold gradient-text">Dhaka Heralds</div>
                 <div className="text-[10px] text-muted-foreground tracking-widest uppercase">International News & Documentary Portal</div>
