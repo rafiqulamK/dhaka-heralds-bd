@@ -1,50 +1,49 @@
 import Navbar from '@/components/Navbar';
 import CategoryTabs from '@/components/CategoryTabs';
 import Footer from '@/components/Footer';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { Globe, Mail, MapPin, Users } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 export default function AboutPage() {
+  const { get, loading } = useSiteSettings();
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <CategoryTabs />
       <main className="max-w-3xl mx-auto px-4 md:px-8 py-12">
         <div className="text-center mb-10">
-          <img src={logo} alt="Dhaka Heralds" className="h-24 w-24 rounded-full object-cover ring-4 ring-primary/30 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold gold-text">About Dhaka Heralds</h1>
-          <p className="text-muted-foreground mt-2">Illuminating Truth. One Story at a Time.</p>
+          <img src={get('logo_url') || logo} alt={get('site_name', 'Dhaka Heralds')} className="h-24 w-24 rounded-full object-cover ring-4 ring-primary/30 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold gradient-text">About {get('site_name', 'Dhaka Heralds')}</h1>
+          <p className="text-muted-foreground mt-2">{get('footer_tagline', 'Illuminating Truth. One Story at a Time.')}</p>
         </div>
 
-        <div className="space-y-8">
-          <section className="bg-card rounded-xl gold-border p-6">
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2 mb-3">
-              <Globe size={20} className="text-primary" /> Our Mission
-            </h2>
-            <p className="text-foreground/80 leading-relaxed">
-              Dhaka Heralds is an independent international news and documentary portal dedicated to delivering accurate, unbiased journalism covering Bangladesh and the world. We believe in the power of truth and the responsibility of the press to inform, educate, and inspire.
-            </p>
-          </section>
+        {loading ? (
+          <div className="h-60 bg-muted animate-pulse rounded-2xl" />
+        ) : (
+          <article className="prose prose-sm dark:prose-invert max-w-none bg-card rounded-2xl border border-border p-6 md:p-10">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {get('about_content', '# About Dhaka Heralds\n\nDhaka Heralds is an independent international news portal.')}
+            </ReactMarkdown>
+          </article>
+        )}
 
-          <section className="bg-card rounded-xl gold-border p-6">
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2 mb-3">
-              <Users size={20} className="text-primary" /> Our Team
-            </h2>
-            <p className="text-foreground/80 leading-relaxed">
-              Our team comprises experienced journalists, documentary filmmakers, data analysts, and AI specialists working together to bring you comprehensive news coverage. We leverage cutting-edge AI technology alongside traditional journalism to deliver verified, fact-checked reporting.
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+          <div className="bg-card rounded-2xl border border-border p-6">
+            <h3 className="font-bold text-foreground flex items-center gap-2 mb-3"><Mail size={18} className="text-primary" /> Contact</h3>
+            <p className="text-sm text-muted-foreground">
+              <a href={`mailto:${get('footer_email', 'info@dhakaheralds.com')}`} className="text-primary hover:underline">{get('footer_email', 'info@dhakaheralds.com')}</a>
             </p>
-          </section>
-
-          <section className="bg-card rounded-xl gold-border p-6">
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2 mb-3">
-              <Mail size={20} className="text-primary" /> Contact Us
-            </h2>
-            <div className="space-y-3 text-foreground/80">
-              <p className="flex items-center gap-2"><Mail size={16} className="text-muted-foreground" /> <a href="mailto:info@dhakaheralds.com" className="text-primary hover:underline">info@dhakaheralds.com</a></p>
-              <p className="flex items-center gap-2"><MapPin size={16} className="text-muted-foreground" /> Dhaka, Bangladesh</p>
-              <p className="flex items-center gap-2"><Globe size={16} className="text-muted-foreground" /> <a href="https://dhakaheralds.com" className="text-primary hover:underline">www.dhakaheralds.com</a></p>
-            </div>
-          </section>
+          </div>
+          <div className="bg-card rounded-2xl border border-border p-6">
+            <h3 className="font-bold text-foreground flex items-center gap-2 mb-3"><Globe size={18} className="text-primary" /> Website</h3>
+            <p className="text-sm text-muted-foreground">
+              <a href="https://dhakaheralds.com" className="text-primary hover:underline">www.dhakaheralds.com</a>
+            </p>
+          </div>
         </div>
       </main>
       <Footer />
