@@ -24,7 +24,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 glass border-b border-border/50">
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3 shrink-0 group">
-          <img src={logo} alt="Dhaka Heralds" className="h-10 w-10 rounded-xl object-cover ring-1 ring-border group-hover:ring-primary/50 transition-all" />
+          <img src={logo} alt="Dhaka Heralds" className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl object-cover ring-1 ring-border group-hover:ring-primary/50 transition-all" />
           <div className="hidden sm:block">
             <span className="text-lg font-bold gradient-text tracking-tight">Dhaka Heralds</span>
             <p className="text-[10px] text-muted-foreground tracking-widest uppercase -mt-0.5">International News</p>
