@@ -12,6 +12,9 @@ import AboutPage from "./pages/AboutPage";
 import VideoPage from "./pages/VideoPage";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminArticles from "./pages/admin/AdminArticles";
@@ -22,6 +25,7 @@ import AdminSocial from "./pages/admin/AdminSocial";
 import AdminAds from "./pages/admin/AdminAds";
 import AdminSocialPosts from "./pages/admin/AdminSocialPosts";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminSiteSettings from "./pages/admin/AdminSiteSettings";
 import AdminRoute from "./components/AdminRoute";
 import InstallPWA from "./components/InstallPWA";
 import MessengerButton from "./components/MessengerButton";
@@ -43,6 +47,9 @@ const App = () => (
             <Route path="/search" element={<SearchPage />} />
             <Route path="/fact-check" element={<FactCheckPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/admin/articles" element={<AdminRoute><AdminArticles /></AdminRoute>} />
@@ -53,6 +60,7 @@ const App = () => (
             <Route path="/admin/social-posts" element={<AdminRoute><AdminSocialPosts /></AdminRoute>} />
             <Route path="/admin/ads" element={<AdminRoute><AdminAds /></AdminRoute>} />
             <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
+            <Route path="/admin/settings" element={<AdminRoute><AdminSiteSettings /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <InstallPWA />
