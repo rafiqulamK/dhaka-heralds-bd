@@ -257,7 +257,7 @@ export default function Index() {
             {/* Empty state */}
             {!hasContent && (
               <div className="text-center py-24">
-                <img src={logo} alt="Dhaka Heralds" className="h-20 w-20 rounded-2xl object-cover ring-2 ring-border mx-auto mb-6" />
+                <img src={logo} alt="Dhaka Heralds" className="h-24 w-24 rounded-2xl object-cover ring-2 ring-border mx-auto mb-6" />
                 <h2 className="text-2xl font-bold gradient-text mb-2">Welcome to Dhaka Heralds</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
                   No published articles yet. Check back soon for the latest news.
