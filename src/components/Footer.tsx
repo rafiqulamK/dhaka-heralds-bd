@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import logo from '@/assets/dhaka-heralds-logo.jpg';
 
 const socialLinks = [
@@ -20,20 +21,24 @@ function SocialIcon({ type, size = 18 }: { type: string; size?: number }) {
 }
 
 export default function Footer() {
+  const { get } = useSiteSettings();
+  const siteName = get('site_name', 'Dhaka Heralds');
+  const email = get('footer_email', 'info@dhakaheralds.com');
+
   return (
     <footer className="bg-card border-t border-border mt-16">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-5">
-              <img src={logo} alt="Dhaka Heralds" className="h-16 w-16 rounded-xl object-cover ring-1 ring-border" />
+              <img src={get('logo_url') || logo} alt={siteName} className="h-16 w-16 rounded-xl object-cover ring-1 ring-border" />
               <div>
-                <div className="text-xl font-bold gradient-text">Dhaka Heralds</div>
-                <div className="text-[10px] text-muted-foreground tracking-widest uppercase">International News & Documentary Portal</div>
+                <div className="text-xl font-bold gradient-text">{siteName}</div>
+                <div className="text-[10px] text-muted-foreground tracking-widest uppercase">{get('site_tagline', 'International News & Documentary Portal')}</div>
               </div>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-              Bringing truth to light since day one. Independent journalism and documentary filmmaking covering Bangladesh and beyond.
+              {get('footer_description', 'Bringing truth to light since day one. Independent journalism and documentary filmmaking covering Bangladesh and beyond.')}
             </p>
 
             <div className="mt-5 flex gap-2.5">
@@ -45,7 +50,7 @@ export default function Footer() {
             </div>
 
             <div className="mt-5 text-sm text-muted-foreground space-y-1">
-              <p>For collaboration: <a href="mailto:info@dhakaheralds.com" className="text-primary hover:underline">info@dhakaheralds.com</a></p>
+              <p>For collaboration: <a href={`mailto:${email}`} className="text-primary hover:underline">{email}</a></p>
               <p><a href="https://dhakaheralds.com" className="text-primary hover:underline">www.dhakaheralds.com</a></p>
             </div>
           </div>
@@ -65,17 +70,17 @@ export default function Footer() {
             <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Company</h4>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li><Link to="/about" className="hover:text-foreground transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
               <li><Link to="/fact-check" className="hover:text-foreground transition-colors">Fact-Check</Link></li>
-              <li><a href="mailto:info@dhakaheralds.com" className="hover:text-foreground transition-colors">Contact</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
+              <li><Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <span>© {new Date().getFullYear()} Dhaka Heralds. All rights reserved.</span>
-          <span className="gradient-text font-semibold">Illuminating Truth. One Story at a Time.</span>
+          <span>{get('footer_copyright', `© ${new Date().getFullYear()} Dhaka Heralds. All rights reserved.`)}</span>
+          <span className="gradient-text font-semibold">{get('footer_tagline', 'Illuminating Truth. One Story at a Time.')}</span>
         </div>
       </div>
     </footer>
